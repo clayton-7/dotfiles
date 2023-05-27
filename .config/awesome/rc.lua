@@ -642,6 +642,7 @@ awful.spawn.with_shell("nitrogen --restore")
 
 awful.spawn.with_shell("ibus start")
 awful.spawn.with_shell("gnome-clocks")
+awful.spawn.with_shell("xrandr --output DP-0 --primary --dpi 132 --output HDMI-0 --right-of DP-0 --dpi 96 --rotate right")
 
 local timer = {
     timeout = 0.3,

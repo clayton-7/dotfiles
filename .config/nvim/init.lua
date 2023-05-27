@@ -598,7 +598,6 @@ local servers = {
       diagnostics = {
         globals = {
           'vim',
-          "nvim_command_output",
         },
       },
       workspace = {
