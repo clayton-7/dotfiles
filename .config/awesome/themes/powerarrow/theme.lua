@@ -12,6 +12,7 @@ local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
 theme.font                                      = "JetBrains Mono 12"
 theme.taglist_font                              = "JetBrains Mono 10"
+theme.tasklist_font                             = "JetBrains Mono 10"
 theme.fg_normal                                 = "#ffffff"
 theme.fg_focus                                  = "#ffffff"
 theme.fg_urgent                                 = "#b74822"
@@ -102,7 +103,7 @@ local separators = lain.util.separators
 
 -- Textclock
 local clock = awful.widget.watch("date +'%a %d %b %R:%S'", 1, function(widget, stdout)
-    widget:set_markup("" .. markup.font(theme.font, stdout))
+    widget:set_markup("" .. markup.font(theme.tasklist_font, stdout))
 end)
 
 -- Calendar
@@ -118,14 +119,14 @@ theme.cal = lain.widget.cal{
 -- ALSA volume
 theme.volume = lain.widget.alsabar({
     --togglechannel = "IEC958,3",
-    notification_preset = { font = theme.font, fg = theme.fg_normal },
+    notification_preset = { font = theme.tasklist_font, fg = theme.fg_normal },
 })
 
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem{
     settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. mem_now.used .. "MB "))
+        widget:set_markup(markup.font(theme.tasklist_font, " " .. mem_now.used .. "MB "))
     end
 }
 
@@ -149,7 +150,7 @@ theme.volume = lain.widget.alsa{
             volicon:set_image(theme.widget_vol_high)
         end
 
-        widget:set_markup(markup.font(theme.font, " " .. volume_now.level .. "% "))
+        widget:set_markup(markup.font(theme.tasklist_font, " " .. volume_now.level .. "% "))
     end
 }
 
@@ -157,7 +158,7 @@ theme.volume = lain.widget.alsa{
 local neticon = wibox.widget.imagebox(theme.widget_net)
 local net = lain.widget.net({
     settings = function()
-        widget:set_markup(markup.fontfg(theme.font, "#FEFEFE", " " .. net_now.received .. " ↓↑ " .. net_now.sent .. " "))
+        widget:set_markup(markup.fontfg(theme.tasklist_font, "#FEFEFE", " " .. net_now.received .. " ↓↑ " .. net_now.sent .. " "))
     end
 })
 
@@ -220,6 +221,7 @@ function theme.at_screen_connect(s)
         filter   = awful.widget.tasklist.filter.focused,
         buttons  = awful.util.taglist_buttons,
         shape_clip = true,
+        font = theme.tasklist_font,
         style    = {
             shape_border_width = 2,
             shape_border_color = '#ff000015',
@@ -260,7 +262,7 @@ function theme.at_screen_connect(s)
             position = "top",
             screen = s,
             shape = gears.shape.rounded_rect,
-            height = 43,
+            height = 39,
             bg = "#101010aa",
             fg = theme.fg_normal,
         }
@@ -269,8 +271,8 @@ function theme.at_screen_connect(s)
             position = "top",
             screen = s,
             shape = gears.shape.rounded_rect,
-            height = 30,
-            bg = "#10101050",
+            height = 35,
+            bg = "#101010aa",
             fg = theme.fg_normal,
         }
     end

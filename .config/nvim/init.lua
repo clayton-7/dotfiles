@@ -261,6 +261,8 @@ require("gruvbox").setup{
     DiffChange = { fg = "#999960" }, -- diff
     DiffDelete = { fg = "#333333", bg = "#505050" }, -- diff
     DiffText = { fg = "#999960" }, -- diff
+    FloatShadow = { fg = "#ffffff" }, --
+    FloatShadowThrough = { fg = "#ffffff" }, --
   }
 }
 
@@ -504,7 +506,7 @@ telescope.load_extension("project") -- projects
 
 local function change_project()
   vim.cmd("clearjumps")
-  vim.cmd("%bd")
+  vim.cmd("%bd!")
   telescope.extensions.project.project()
 end
 
@@ -588,6 +590,9 @@ require('mason').setup() -- Setup mason so it can manage external tooling
 
 local mason_lspconfig = require("mason-lspconfig") -- Ensure the servers above are installed
 
+local runtime_library = vim.api.nvim_get_runtime_file("", true)
+table.insert(runtime_library, "${3rd}/Defold/library")
+
 local servers = {
   -- clangd = {},
   -- gopls = {},
@@ -602,7 +607,7 @@ local servers = {
       },
       workspace = {
         checkThirdParty = false,
-        libray = { "${3rd}/Defold/library" },
+        library = runtime_library,
       },
       telemetry = { enable = false },
     },
@@ -776,7 +781,7 @@ end, { silent = true })
 -- vim.keymap.set({'n', 'v', 'i', 'x'}, "<leader>dd", illuminate.textobj_select, { silent = true })
 
 vim.keymap.set({'n', 't'}, "<esc>", function() set_terminal(false) end, { silent = true })    -- close terminal
-vim.keymap.set("n", "<leader>b", dap.toggle_breakpoint, { silent = true })
+vim.keymap.set("n", "<leader>bb", dap.toggle_breakpoint, { silent = true })
 vim.keymap.set("n", "<leader>1", dap.step_into, { silent = true })
 vim.keymap.set("n", "<leader>2", dap.step_over, { silent = true })
 vim.keymap.set("n", "<leader>3", dap.step_out, { silent = true })
@@ -791,14 +796,12 @@ vim.keymap.set("n", "<leader>0", dapui.toggle, { silent = true })
 
 vim.keymap.set('n', '<leader>op', change_project, { desc = '[O]pen [P]rojects' })
 
-
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', telescope_bi.oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', telescope_bi.buffers, { desc = '[space] Find existing buffers' })
 vim.keymap.set('n', '<leader>f', function()
   telescope_bi.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown{
-    winblend = 10,
-    previewer = false,
+    previewer = true,
   })
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
