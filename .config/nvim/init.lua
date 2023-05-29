@@ -38,7 +38,6 @@ require('packer').startup(function(use)
   use 'echasnovski/mini.pairs' -- autopairs
   use "nvim-tree/nvim-web-devicons"
   use "tikhomirov/vim-glsl" -- glsl syntax highlight
-  use("nathom/filetype.nvim") -- setar filetypes
 
   -- debugger
   use 'mfussenegger/nvim-dap'
@@ -129,17 +128,6 @@ require("nvim-treesitter.configs").setup{
 if is_bootstrap then print 'restart nvim' return end
 
 require('mini.pairs').setup()
-
-require("filetype").setup{
-  overrides = {
-    extensions = {
-      -- Set the filetype of files
-      script = "lua",
-      gui_script = "lua",
-      gui = "lua",
-    },
-  }
-}
 
 require('treesitter-context').setup{
   enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -297,8 +285,6 @@ end
 --------------------------------------------------------------------------- comments
 require('Comment').setup{ ignore = '^$' }
 
---------------------------------------------------------------------------- windows
-
 --------------------------------------------------------------------------- buffers
 local function change_buffer(next)
   if next then
@@ -346,6 +332,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- reading Defold scripts as lua
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = { "*.gui_script", "*.script" },
+  callback = function()
+    vim.opt.filetype = "lua"
+  end,
+  desc = "Reading Defold scripts as lua"
+})
 --------------------------------------------------------------------------- DAP
 local dap = require('dap')
 local dapui = require('dapui')
