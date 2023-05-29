@@ -494,6 +494,7 @@ telescope.setup{
       height = 0.99,
       width = 0.99,
       prompt_position = "bottom",
+      preview_height = 0.7,
     },
   },
 }
