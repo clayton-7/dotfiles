@@ -414,7 +414,7 @@ local function run()
 end
 
 local function build(run_app)
-  vim.cmd('TermExec cmd="clear && bear -- ninja compile_shaders compile"')
+  vim.cmd('TermExec cmd="clear && bear -- ninja build"')
 
   if run_app then run() end
 end
