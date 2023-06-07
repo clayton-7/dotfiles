@@ -300,14 +300,14 @@ local function change_buffer(next)
     local char = buffer_name:sub(i, i)
 
     if char == "/" or char == "\\" then
-      buffer_name = buffer_tmp:reverse()
+      buffer_name = buffer_tmp
       break
     end
 
     buffer_tmp = buffer_tmp .. char
   end
 
-  vim.notify(buffer_name, vim.log.levels.INFO, {
+  vim.notify(buffer_name:reverse(), vim.log.levels.INFO, {
     title = "Buffer atual",
     timeout = 500,
     render = "compact",
