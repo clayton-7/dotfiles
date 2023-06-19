@@ -491,9 +491,9 @@ awful.rules.rules = {
     { rule_any = { type = { "dialog", "normal" } }, properties = { titlebars_enabled = false } },
 
     { rule = { class = "Force" }, properties = {
-        titlebars_enabled = true, floating = true },
+        titlebars_enabled = false, floating = true },
         callback = function(c)
-            awful.placement.centered(c,nil)
+            awful.placement.centered(c)
         end
     },
 
@@ -640,17 +640,23 @@ awful.spawn.with_shell("nm-applet")
 awful.spawn.with_shell("volumeicon")
 awful.spawn.with_shell("nitrogen --restore")
 
+awful.spawn.with_shell("xrandr --output DP-0 --primary --dpi 132 --output HDMI-0 --right-of DP-0 --dpi 96 --rotate right")
 awful.spawn.with_shell("ibus start")
 awful.spawn.with_shell("gnome-clocks")
-awful.spawn.with_shell("xrandr --output DP-0 --primary --dpi 132 --output HDMI-0 --right-of DP-0 --dpi 96 --rotate right")
+awful.spawn.with_shell("easyeffects")
 
 local timer = {
-    timeout = 0.3,
+    timeout = 0.5,
     single_shot = true,
     autostart = true,
     callback = function()
         local t = client.focus.screen.tags[9]
-        if t then client.focus:move_to_tag(t) return end
+        if t then
+            client.focus:move_to_tag(t)
+            t = client.focus.screen.tags[9]
+            if t then client.focus:move_to_tag(t) end
+            return
+        end
     end
 }
 gears.timer(timer)

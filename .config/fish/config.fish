@@ -7,6 +7,7 @@ end
 theme_gruvbox dark medium
 
 # xrandr --output DP-0 --primary --dpi 132 --output HDMI-0 --right-of DP-0 --dpi 96 --rotate right
-alias ls='exa -la --color=always --group-directories-first'
+alias ls='exa --color=always --group-directories-first'
+alias e='cd $(exa -a | fzf --reverse) && ll'
 xset r rate 250 100
 bass source ~/dev/vulkan/1.3.239.0/setup-env.sh
