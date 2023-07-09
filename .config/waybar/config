@@ -1,0 +1,96 @@
+[{
+    "layer": "top",
+    "output": "DP-1",
+    "height": 30,
+    "spacing": 2, // Gaps between modules
+    "modules-left": ["wlr/workspaces", "sway/mode"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["tray", "idle_inhibitor", "cpu","memory", "temperature", "network", "pulseaudio", "clock", "custom/power"],
+
+    "wlr/workspaces": {
+        "on-click": "activate",
+    },
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+    "cpu": {
+        "format": "CPU:{usage}%",
+        "tooltip": false,
+        "interval": 2
+    },
+    "network": {
+        "format-ethernet": "{bandwidthDownBits}↓↑{bandwidthUpBits}",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-linked": "{ifname} (No IP)",
+        "format-disconnected": "Disconnected ⚠",
+        "interval": 2,
+        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "on-click": "toggleRemote"
+    },
+    "tray": {
+        "icon-size": 15,
+        "spacing": 10
+    },
+    "temperature": {
+        // "thermal-zone": 2,
+        "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
+        "critical-threshold": 80,
+        // "format-critical": "{temperatureC}°C {icon}",
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": [""],
+        "interval": 2,
+    },
+    "clock": {
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format": "{:%d/%m/%Y  %H:%M:%S}",
+        "interval": 1,
+        "tooltip": true,
+        "on-click": "gnome-calendar"
+    },
+    "memory": {
+        "format": "MEM:{used}GB"
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-muted": "0% {icon}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    "custom/power": {
+        "format": "  ",
+        "on-click": "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'swaymsg exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#005566 --button-background=#009999 --button-border=#002b33 --border-bottom=#002b33"
+    },
+},
+{
+    "layer": "top",
+    "output": "HDMI-A-1",
+    "modules-left": ["wlr/workspaces", "sway/mode"],
+    "modules-center": ["hyprland/window"],
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+    "wlr/workspaces": {
+        "on-click": "activate",
+    },
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+}]

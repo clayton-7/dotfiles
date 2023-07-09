@@ -164,6 +164,10 @@ vim.o.smartcase = true
 vim.o.updatetime = 200
 vim.wo.signcolumn = 'yes'
 
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
+
 ---------------------------------------------------------------------------
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -721,8 +725,8 @@ vim.keymap.set("v", "<tab>", ":><CR>gv<CR>k", { silent = true })
 vim.keymap.set("v", "<S-tab>", ":<<CR>gv<CR>k", { silent = true })
 
 -- replace words
-vim.keymap.set("n", "<C-f>", "*N:%s//new/c")
-vim.keymap.set("v", "<C-f>", ":s/old/new/")
+vim.keymap.set("n", "<C-f>", "*N:%s//new/gc")
+vim.keymap.set("v", "<C-f>", ":s/old/new/g")
 
 -- open/close git diff
 vim.opt.fillchars:append { diff = "╱" } -- diagonal line on diffs

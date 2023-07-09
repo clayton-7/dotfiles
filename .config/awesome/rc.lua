@@ -640,10 +640,11 @@ awful.spawn.with_shell("nm-applet")
 awful.spawn.with_shell("volumeicon")
 awful.spawn.with_shell("nitrogen --restore")
 
-awful.spawn.with_shell("xrandr --output DP-0 --primary --dpi 132 --output HDMI-0 --right-of DP-0 --dpi 96 --rotate right")
+awful.spawn.with_shell("xrandr --output DP-0 --primary --dpi 132 --output HDMI-A-0 --right-of DisplayPort-0 --dpi 96 --rotate right")
 awful.spawn.with_shell("ibus start")
 awful.spawn.with_shell("gnome-clocks")
 awful.spawn.with_shell("easyeffects")
+awful.spawn.with_shell("corectrl")
 
 local timer = {
     timeout = 0.5,
