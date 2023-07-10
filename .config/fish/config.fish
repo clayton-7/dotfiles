@@ -11,3 +11,4 @@ alias ls='exa --color=always --group-directories-first'
 alias e='cd $(exa -a | fzf --reverse) && ll'
 xset r rate 250 100
 bass source ~/dev/vulkan/1.3.239.0/setup-env.sh
+set PATH "$HOME/.cargo/bin:$PATH"

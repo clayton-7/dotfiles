@@ -1,5 +1,6 @@
 [{
     "layer": "top",
+    "name": "dp",
     "output": "DP-1",
     "height": 30,
     "spacing": 2, // Gaps between modules
@@ -74,12 +75,13 @@
         "on-click": "pavucontrol"
     },
     "custom/power": {
-        "format": "  ",
-        "on-click": "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'swaymsg exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#005566 --button-background=#009999 --button-border=#002b33 --border-bottom=#002b33"
+        "format": " ",
+        "on-click": "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'hyprctl dispatch exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#005566 --button-background=#009999 --button-border=#002b33 --border-bottom=#002b33"
     },
 },
 {
     "layer": "top",
+    "name": "hdmi",
     "output": "HDMI-A-1",
     "modules-left": ["wlr/workspaces", "sway/mode"],
     "modules-center": ["hyprland/window"],
