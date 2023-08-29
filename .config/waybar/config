@@ -1,15 +1,71 @@
 [{
     "layer": "top",
-    "name": "dp",
+    "position": "bottom",
+    "name": "dp1",
+    "mode": "hide",
     "output": "DP-1",
-    "height": 30,
+    "height": 33,
     "spacing": 2, // Gaps between modules
-    "modules-left": ["wlr/workspaces", "sway/mode"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["tray", "idle_inhibitor", "cpu","memory", "temperature", "network", "pulseaudio", "clock", "custom/power"],
+    // "modules-left": ["hyprland/window"],
+    "modules-center": [],
+    "modules-right": ["wlr/workspaces", "sway/mode"],
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+    "wlr/workspaces": {
+        "on-click": "activate",
+    },
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+},
+{
+    "layer": "top",
+    "position": "bottom",
+    "name": "dp2",
+    "mode": "hide",
+    "output": "DP-2",
+    "height": 24,
+    "spacing": 2, // Gaps between modules
+    // "modules-left": [
+    //     "hyprland/window"
+    // ],
+    // "modules-center": [
+    //     "tray",
+    //     "idle_inhibitor",
+    //     "cpu",
+    //     "memory",
+    //     "network",
+    //     "temperature",
+    //     "pulseaudio",
+    //     "custom/weather",
+    //     "clock",
+    //     "custom/power"
+    // ],
+    // "modules-right": [
+    //     "sway/mode",
+    //     "wlr/workspaces",
+    // ],
+    "modules-right": [
+        "tray",
+        "sway/mode",
+        "idle_inhibitor",
+        "clock",
+        "custom/power",
+        "wlr/workspaces",
+    ],
 
     "wlr/workspaces": {
         "on-click": "activate",
+    },
+    // https://github.com/bjesus/wttrbar
+    "custom/weather": {
+        "format": " {}°C ",
+        "tooltip": true,
+        "interval": 900,
+        "exec": "wttrbar/target/release/wttrbar",
+        "return-type": "json"
     },
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
@@ -17,10 +73,10 @@
     "cpu": {
         "format": "CPU:{usage}%",
         "tooltip": false,
-        "interval": 2
+        "interval": 1
     },
     "network": {
-        "format-ethernet": "{bandwidthDownBits}↓↑{bandwidthUpBits}",
+        "format-ethernet": "{bandwidthDownBits:>}↓↑{bandwidthUpBits:>}",
         "tooltip-format": "{ifname} via {gwaddr} ",
         "format-linked": "{ifname} (No IP)",
         "format-disconnected": "Disconnected ⚠",
@@ -33,7 +89,7 @@
             "activated": "",
             "deactivated": ""
         },
-        "on-click": "toggleRemote"
+        //"on-click": "toggleRemote"
     },
     "tray": {
         "icon-size": 15,
@@ -75,24 +131,9 @@
         "on-click": "pavucontrol"
     },
     "custom/power": {
+        "position": "bottom",
         "format": " ",
-        "on-click": "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'hyprctl dispatch exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#005566 --button-background=#009999 --button-border=#002b33 --border-bottom=#002b33"
-    },
-},
-{
-    "layer": "top",
-    "name": "hdmi",
-    "output": "HDMI-A-1",
-    "modules-left": ["wlr/workspaces", "sway/mode"],
-    "modules-center": ["hyprland/window"],
-
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    "wlr/workspaces": {
-        "on-click": "activate",
-    },
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
+        "on-click": "swaynag -t warning -m '' -b 'Logout' 'hyprctl dispatch exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#393939ea --button-background=#33aa99 --button-border=#002b33 --border-bottom=#002b33"
     },
 }]
+// vim: syntax=json

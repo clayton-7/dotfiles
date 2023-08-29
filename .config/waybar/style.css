@@ -1,48 +1,117 @@
-.dp * {
+.dp1 * {
     border: none;
     font-family: 'JetBrainsMono', 'Noto Sans', 'Roboto Condensed', sans-serif;
-    font-size: 18px;
+    font-size: 19px;
     color: #ffffff;
-    border-radius: 20px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.dp2 * {
+    border: none;
+    font-family: 'JetBrainsMono', 'Noto Sans', 'Roboto Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ccffe0;
+    border-radius: 12px;
 }
 
 window#waybar {
     background: transparent;
 }
-.hdmi * {
-    border: none;
-    font-family: 'JetBrainsMono', 'Noto Sans', 'Roboto Condensed', sans-serif;
-    font-size: 12px;
-    color: #ffffff;
-    border-radius: 20px;
+
+/* ====================== MONITOR 1 ======================= */
+.dp1 .modules-left {
+    background-color: rgba(0, 43, 51, 0.85);
+    margin: 0 0 0 2px;
 }
 
-/*-----module groups----*/
-.modules-right {
-    background-color: rgba(0,43,51,0.85);
-    margin: 2px 10px 0 0;
-}
-.modules-center {
-    background-color: rgba(0,43,51,0.85);
-    margin: 2px 0 0 0;
-}
-.modules-left {
-    margin: 2px 0 0 5px;
-    background-color: rgba(0,119,179,0.6);
-}
-/*-----modules indv----*/
-#workspaces button {
-    padding: 1px 5px;
+.dp1 .modules-center {
     background-color: transparent;
 }
-#workspaces button:hover {
-    box-shadow: inherit;
-    background-color: rgba(0,153,153,1);
+
+.dp1 .modules-right {
+    margin: 1px 2px 0px 0px;
+    padding: 3px 3px;
+    background-color: rgba(0, 43, 51, 0.5);
+    border-radius: 8px;
 }
 
-#workspaces button.focused {
-    background-color: rgba(0,43,51,0.85);
+.dp1 #workspaces button {
+    background-color: transparent;
+    margin: 0 0 0 0;
+    padding: 0 5px;
+    font-weight: bold;
 }
+
+.dp1 #workspaces button.active {
+    background-color: rgba(80, 170, 255, 0.7);
+    border-radius: 5px;
+    margin: 0 0 0 0;
+    padding: 0 5px;
+}
+.dp1 #workspaces button.hover {
+    box-shadow: inherit;
+    background-color: rgba(0, 153, 153, 1);
+    margin: 0 0 0 0;
+    padding: 0 5px;
+}
+.dp1 #workspaces button.focused {
+    background-color: rgba(0, 43, 51, 0.85);
+    margin: 0 0 0 0;
+    padding: 0 5px;
+}
+/* ====================== MONITOR 2 ======================= */
+.dp2 .modules-left {
+    background-color: rgba(0, 43, 51, 0.85);
+    margin: 0 0 0 0px;
+}
+
+.dp2 .modules-center {
+    /* background-color: rgba(0, 43, 51, 0.85); */
+    background-color: transparent;
+}
+
+/* .dp2 .modules-right { */
+/*     background-color: rgba(0, 43, 51, 0.85); */
+/*     border-radius: 7px; */
+/*     margin: 1px 2px 0px 0px; */
+/*     padding: 3px 3px; */
+/* } */
+
+.dp2 .modules-right {
+    background-color: rgba(0, 43, 51, 0.6);
+    border-radius: 7px;
+    margin: 0px 2px 0px 0px;
+    padding: 0px 0px;
+}
+
+.dp2 #workspaces button {
+    background-color: transparent;
+    margin: 0 0 0 0;
+    padding: 0px 0px;
+}
+
+.dp2 #workspaces button.active {
+    background-color: rgba(80, 170, 255, 0.7);
+    border-radius: 6px;
+    margin: 0 0 0 0;
+    padding: 0px 0px;
+}
+.dp2 #workspaces button.hover {
+    box-shadow: inherit;
+    background-color: rgba(0, 153, 153, 1);
+    margin: 0 0 0 0;
+    padding: 0px 0px;
+}
+.dp2 #workspaces button.focused {
+    background-color: rgba(0, 43, 51, 0.85);
+    margin: 0 0 0 0;
+    padding: 0px 0px;
+}
+/* ======================================================== */
+
+
 #window {
     padding: 0 10px;
     font-weight: bold;
@@ -58,21 +127,27 @@ window#waybar {
 #custom-media,
 #tray,
 #mode,
-#custom-menu,
+#custom-menu {
+    padding: 0 7px;
+}
+
 #idle_inhibitor {
-    padding: 0 10px;
+    padding: 0 7px;
+    font-size: 17px;
 }
 #mode {
     color: #cc3436;
     font-weight: bold;
 }
 #custom-power {
-    background-color: rgba(0,119,179,0.6);
-    border-radius: 100px;
-    margin: 5px 5px;
-    padding: 0px 0px 0px 12px;
+    background-color: rgba(0, 119, 179, 0.6);
+    border-radius: 12px;
+    margin: 0px 5px;
+    padding: 0px 0px 0px 8px;
+    font-size: 14px;
 }
 /*-----Indicators----*/
+
 #idle_inhibitor.activated {
     color: #2dcc36;
 }
@@ -82,10 +157,3 @@ window#waybar {
 #temperature.critical {
     color: #cc3436;
 }
-/*-----Colors----*/
-/*
- *rgba(0,85,102,1),#005566 --> Indigo(dye)
- *rgba(0,43,51,1),#002B33 --> Dark Green
- *rgba(0,153,153,1),#009999 --> Persian Green
- *
- */
