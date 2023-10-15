@@ -1,19 +1,19 @@
 [{
     "layer": "top",
     "position": "bottom",
-    "name": "dp1",
+    "name": "dp2",
     "mode": "hide",
-    "output": "DP-1",
+    "output": "DP-2",
     "height": 33,
     "spacing": 2, // Gaps between modules
     // "modules-left": ["hyprland/window"],
     "modules-center": [],
-    "modules-right": ["wlr/workspaces", "sway/mode"],
+    "modules-right": ["hyprland/workspaces", "sway/mode"],
 
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },
-    "wlr/workspaces": {
+    "hyprland/workspaces": {
         "on-click": "activate",
     },
     "sway/mode": {
@@ -23,9 +23,9 @@
 {
     "layer": "top",
     "position": "bottom",
-    "name": "dp2",
+    "name": "dp1",
     "mode": "hide",
-    "output": "DP-2",
+    "output": "DP-1",
     "height": 24,
     "spacing": 2, // Gaps between modules
     // "modules-left": [
@@ -45,7 +45,7 @@
     // ],
     // "modules-right": [
     //     "sway/mode",
-    //     "wlr/workspaces",
+    //     "hyprland/workspaces",
     // ],
     "modules-right": [
         "tray",
@@ -53,10 +53,10 @@
         "idle_inhibitor",
         "clock",
         "custom/power",
-        "wlr/workspaces",
+        "hyprland/workspaces",
     ],
 
-    "wlr/workspaces": {
+    "hyprland/workspaces": {
         "on-click": "activate",
     },
     // https://github.com/bjesus/wttrbar
