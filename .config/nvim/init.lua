@@ -4,7 +4,6 @@ vim.opt.so = 9999 -- cursor always on center
 
 -- enable highlight groups
 vim.opt.termguicolors = true
-vim.o.termguicolors = true
 
 vim.opt.smartindent = true
 -- vim.o.tabstop = 4
@@ -172,6 +171,13 @@ require('lazy').setup({
           { buffer = bufnr, desc = '[P]review [H]unk' })
       end,
     },
+  },
+  {
+    -- 'psliwka/vim-smoothie'
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup()
+    end
   },
   {
     -- Theme inspired by Atom
