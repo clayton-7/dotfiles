@@ -59,7 +59,17 @@ require('lazy').setup({
     },
 
     -- highlight current word
-    { "RRethy/vim-illuminate" },
+    {
+        "RRethy/vim-illuminate",
+        event = "BufEnter",
+        config = function()
+            if vim.bo.filetype == "lua" then return end
+
+            vim.cmd("highlight illuminatedWordText  guifg=#ffffff guibg=#105030 gui=underline,bold")
+            vim.cmd("highlight illuminatedWordRead  guifg=#ffffff guibg=#105030 gui=underline,bold")
+            vim.cmd("highlight illuminatedWordWrite guifg=#ffffff guibg=#105030 gui=underline,bold")
+        end
+    },
     { 'booperlv/nvim-gomove' },                    -- move lines
 
     { 'Shatur/neovim-session-manager' },           -- session manager
@@ -236,7 +246,14 @@ require('lazy').setup({
     -- },
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', opts = {} },
+    {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+            require('Comment.ft').set('wgsl', {'//%s', '/*%s*/'})
+        end,
+        lazy = false
+    },
 
     -- Fuzzy Finder (files, lsp, etc)
     {
@@ -245,8 +262,7 @@ require('lazy').setup({
         dependencies = {
             'nvim-lua/plenary.nvim',
             -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-            -- Only load if `make` is available. Make sure you have the system
-            -- requirements installed.
+            -- Only load if `make` is available. Make sure you have the system requirements installed.
 
             -- undo tree with telescope
             "debugloop/telescope-undo.nvim", -- https://dandavison.github.io/delta/installation.html
