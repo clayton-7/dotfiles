@@ -315,6 +315,9 @@ require('lazy').setup({
         "abecodes/tabout.nvim",
         wants = {'nvim-treesitter'}, -- or require if not used so far
         after = {'nvim-cmp'}         -- if a completion plugin is using tabs load it before
+    },
+    {   -- multiples cursor
+        "mg979/vim-visual-multi",
     }
     -- {
     --   'sigmaSd/nim-nvim-basic',
@@ -361,6 +364,7 @@ require('telescope').setup {
                 ['<C-d>'] = false,
             },
         },
+        file_ignore_patterns = {},
         layout_strategy = "vertical",
         layout_config = {
             height = 0.99,
