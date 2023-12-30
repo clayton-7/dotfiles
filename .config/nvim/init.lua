@@ -7,7 +7,13 @@ vim.opt.termguicolors = true
 
 vim.opt.smartindent = true
 vim.o.cursorline = true
-vim.cmd("set rnu")                                   -- relative numbers
+vim.cmd("set rnu")
+vim.cmd("set guicursor=n-v-c-i:block")
+
+-- key `o` does not create new comment
+vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
+    callback = function() vim.cmd("set formatoptions-=o") end
+})
 
 vim.opt.guifont = { "JetBrains Mono" }               -- font
 
@@ -67,22 +73,49 @@ require('lazy').setup({
         config = function()
             if vim.bo.filetype == "lua" then return end
 
-            vim.cmd("highlight illuminatedWordText  guifg=#ffffff guibg=#105030 gui=underline,bold")
-            vim.cmd("highlight illuminatedWordRead  guifg=#ffffff guibg=#105030 gui=underline,bold")
-            vim.cmd("highlight illuminatedWordWrite guifg=#ffffff guibg=#105030 gui=underline,bold")
+            vim.cmd("highlight illuminatedWordText  guifg=#ffffff guibg=none gui=underline,bold")
+            vim.cmd("highlight illuminatedWordRead  guifg=#ffffff guibg=none gui=underline,bold")
+            vim.cmd("highlight illuminatedWordWrite guifg=#ffffff guibg=none gui=underline,bold")
         end
     },
     { 'booperlv/nvim-gomove' },                    -- move lines
 
-    { 'Shatur/neovim-session-manager', priority = 1000 },           -- session manager
+    { -- session manager
+        "Shatur/neovim-session-manager",
+        priority = 1000,
+        config = function()
+            require('session_manager').setup {
+                sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'), -- The directory where the session files will be saved.
+                path_replacer = '__', -- The character to which the path separator will be replaced for session files.
+                colon_replacer = '++', -- The character to which the colon symbol will be replaced for session files.
+
+                -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
+                autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
+                autosave_last_session = true, -- Automatically save last session on exit and on session switch.
+
+                -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
+                autosave_ignore_not_normal = true,
+                autosave_ignore_dirs = {}, -- A list of directories where the session will not be autosaved.
+                autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
+                    'gitcommit',
+                    'gitrebase',
+                },
+                autosave_ignore_buftypes = {},    -- All buffers of these bufer types will be closed before the session is saved.
+                autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
+                max_path_length = 80, -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+            }
+        end,
+    },
     { 'nvim-treesitter/nvim-treesitter-context' }, -- show the function that you are in on top on the code
     {
         "nvim-telescope/telescope-file-browser.nvim",
         dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
     },
-    { -- trim spaces
-        "mcauley-penney/tidy.nvim",
-        config = function() require("tidy").setup() end
+    {
+        "cappyzawa/trim.nvim",
+        config = function()
+            require("trim").setup{}
+        end
     },
     {
         "nvim-telescope/telescope-dap.nvim",
@@ -212,16 +245,17 @@ require('lazy').setup({
 
     {
         "Exafunction/codeium.nvim",
+        event = 'BufEnter',
         dependencies = {
             "nvim-lua/plenary.nvim",
             "hrsh7th/nvim-cmp",
         },
         config = function()
-            require("codeium").setup {}
-            -- vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true })
-            -- vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-            -- vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
-            -- vim.keymap.set('i', '<c-x>', function() return vim.cmd['codeium.Clear']() end, { expr = true })
+            require("codeium").setup{}
+            -- vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+            -- vim.keymap.set('i', '<C-z>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+            -- vim.keymap.set('i', '<C-b>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+            -- vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
         end
     },
     {
@@ -300,6 +334,11 @@ require('lazy').setup({
                     --     tabwidth = 4,
                     --     expandtab = false
                     -- },
+
+                    nim = {
+                        tabwidth = 2,
+                        expandtab = true
+                    },
                     {
                         filetypes = { "go","python", "gdscript" },
                         config = {
@@ -311,40 +350,29 @@ require('lazy').setup({
             }
         end
     },
-    {
-        "abecodes/tabout.nvim",
-        wants = {'nvim-treesitter'}, -- or require if not used so far
-        after = {'nvim-cmp'}         -- if a completion plugin is using tabs load it before
-    },
     {   -- multiples cursor
         "mg979/vim-visual-multi",
-    }
-    -- {
-    --   'sigmaSd/nim-nvim-basic',
-    --   config = function()
-    --     require("nim-nvim").setup()
-    --   end,
-    --   -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
-    --   ft = "nim"
-    -- }
-}, {})
-
-require('session_manager').setup {
-    sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'), -- The directory where the session files will be saved.
-    path_replacer = '__',                                                           -- The character to which the path separator will be replaced for session files.
-    colon_replacer = '++',                                                          -- The character to which the colon symbol will be replaced for session files.
-    autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,      -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
-    autosave_last_session = true,                                                   -- Automatically save last session on exit and on session switch.
-    autosave_ignore_not_normal = true,                                              -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
-    autosave_ignore_dirs = {},                                                      -- A list of directories where the session will not be autosaved.
-    autosave_ignore_filetypes = {                                                   -- All buffers of these file types will be closed before the session is saved.
-        'gitcommit',
-        'gitrebase',
     },
-    autosave_ignore_buftypes = {},    -- All buffers of these bufer types will be closed before the session is saved.
-    autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-    max_path_length = 80,             -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
-}
+    -- { -- init screen
+    --     "goolord/alpha-nvim",
+    --     dependencies = { "nvim-tree/nvim-web-devicons" },
+    --     config = function ()
+    --         -- require("alpha").setup(require("alpha.themes.startify").config)
+    --         require'alpha'.setup(require'alpha.themes.dashboard'.config)
+    --     end
+    -- },
+    { -- nim treesitter
+        "alaviss/nim.nvim"
+    },
+    {
+      'sigmaSd/nim-nvim-basic',
+      config = function()
+        require("nim-nvim").setup()
+      end,
+      -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
+      ft = "nim"
+    }
+}, {})
 
 -- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -396,7 +424,7 @@ vim.filetype.add { extension = { wgsl = "wgsl" } }
 require('nvim-treesitter.configs').setup {
     modules = {},
     sync_install = false,
-    ignore_install = {},
+    ignore_install = { "nim" },
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = { 'c', 'cpp', 'go', 'lua', 'rust', 'vimdoc', 'vim', 'wgsl' },
 
@@ -571,10 +599,6 @@ local luasnip = require('luasnip')
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
-
-local tabout = require("tabout")
-tabout.setup{}
-
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup {
     snippet = {
@@ -623,9 +647,6 @@ cmp.setup {
 
             elseif luasnip.jumpable(1) then
                 luasnip.jump(1)
-
-            elseif vim.api.nvim_get_mode().mode == 'i' then
-                tabout.tabout()
 
             else
                 fallback()
@@ -808,6 +829,18 @@ vim.keymap.set({ 'n', 't' }, "<leader>5", function()
 
 end, set_opts("Debug start")) -- run debug
 
+vim.keymap.set({ 'n', 't' }, "<leader>6", function()
+    if vim.bo.filetype == "c" then
+        build(false)
+
+    elseif vim.bo.filetype == "zig" then
+        -- set_terminal(true)
+        vim.cmd('TermExec cmd="clear && zig build run"')
+        set_terminal(false)
+    end
+
+end, set_opts("Debug start")) -- run debug
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
@@ -815,7 +848,6 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- TODO: Move to a separate file
-vim.keymap.set({ 'n', 't' }, "<leader>6", function() build(false) end, set_opts())  -- build
 vim.keymap.set({ 'n', 't' }, "<leader>7", function() build(true) end, set_opts())   -- build and run
 vim.keymap.set({ 'n', 't' }, "<leader>8", run, set_opts())                          -- run
 
@@ -898,10 +930,14 @@ vim.keymap.set("v", "<leader>d", [[c"<C-r>""<Esc>]], set_opts("Wrap selected wor
 vim.keymap.set("v", "<leader>q", [[c'<C-r>"'<Esc>]], set_opts("Wrap selected word with single quotes")) -- wrap with single quotes
 
 vim.keymap.set("n", "ç", "^", set_opts("Go to the first word on current line")) -- go to the first word on the line
+vim.keymap.set({ "n", "v" }, "*", "*N")
 
 -- yank to OS clipboard
+vim.keymap.set("n", "<C-c>", '"+yy')
+vim.keymap.set("v", "<C-c>", '"+y')
 vim.keymap.set("n", "<C-S-c>", '"+yy')
 vim.keymap.set("v", "<C-S-c>", '"+y')
+
 vim.keymap.set("v", "p", '"_dP', set_opts())
 
 vim.keymap.set("v", "y", 'ygv', set_opts())        -- stay on visual mode after yank
@@ -969,15 +1005,15 @@ ls.add_snippets("zig", {
         i(2),
     }),
     s("printstr", {
-        t('log.print_str('),
+        t('log.print_str("'),
         i(1),
-        t(', @src());'),
+        t('", @src());'),
         i(2),
     }),
     s("printstrerr", {
-        t('log.print_str_err('),
+        t('log.print_str_err("'),
         i(1),
-        t(', @src());'),
+        t('", @src());'),
         i(2),
     }),
     s("printerr", {
@@ -1008,5 +1044,11 @@ ls.add_snippets("zig", {
         i(2),
         t(' }, @src());'),
         i(3),
+    }),
+    s("sizeof", {
+        t('@sizeOf('),
+        i(1),
+        t(');'),
+        i(2),
     }),
 })

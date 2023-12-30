@@ -1,36 +1,10 @@
 env:
-  # TERM variable
-  #
-  # This value is used to set the `$TERM` environment variable for
-  # each instance of Alacritty. If it is not present, alacritty will
-  # check the local terminfo database and use `alacritty` if it is
-  # available, otherwise `xterm-256color` is used.
   TERM: xterm-256color
 
 mouse:
     hide_when_typing: true
 
 window:
-  # Window dimensions (changes require restart)
-  #
-  # Specified in number of columns/lines, not pixels.
-  # If both are `0`, this setting is ignored.
-  # dimensions:
-  #   columns: 500
-  #   lines: 300
-
-  # Window position (changes require restart)
-  #
-  # Specified in number of pixels.
-  # If the position is not set, the window manager will handle the placement.
-  #position:
-  #  x: 0
-  #  y: 0
-
-  # Window padding (changes require restart)
-  #
-  # Blank space added around the window in pixels. This padding is scaled
-  # by DPI and the specified value is always added at both opposing sides.
   padding:
     x: 0
     y: 0
@@ -40,33 +14,9 @@ window:
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
 
-  # Background opacity
-  #
-  # Window opacity as a floating point number from `0.0` to `1.0`.
-  # The value `0.0` is completely transparent and `1.0` is opaque.
-  opacity: 0.79
-
-  # Window decorations
-  #
-  # Values for `decorations`:
-  #     - full: Borders and title bar
-  #     - none: Neither borders nor title bar
-  #
-  # Values for `decorations` (macOS only):
-  #     - transparent: Title bar, transparent background and title bar buttons
-  #     - buttonless: Title bar, transparent background, but no title bar buttons
-  # decorations: none
-
-  # Startup Mode (changes require restart)
-  #
-  # Values for `startup_mode`:
-  #   - Windowed
-  #   - Maximized
-  #   - Fullscreen
-  #
-  # Values for `startup_mode` (macOS only):
-  #   - SimpleFullscreen
-  #startup_mode: Windowed
+  opacity: 0.84
+  # opacity: 0.93
+  # opacity: 0.95
 
   # Window title
   title: Alacritty
@@ -78,44 +28,16 @@ window:
     # General application class
     general: Alacritty
 
-  # GTK theme variant (Linux/BSD only)
-  #
-  # Override the variant of the GTK theme. Commonly supported values are `dark` and `light`.
-  # Set this to `None` to use the default theme variant.
-  #gtk_theme_variant: None
-
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
   history: 5000
 
-  # Number of lines the viewport will move for every line scrolled when
-  # scrollback is enabled (history > 0).
-  #multiplier: 3
-
-  # Scroll to the bottom when new text is written to the terminal.
-  #auto_scroll: false
-
-# Spaces per Tab (changes require restart)
-#
-# This setting defines the width of a tab in cells.
-#
-# Some applications, like Emacs, rely on knowing about the width of a tab.
-# To prevent unexpected behavior in these applications, it's also required to
-# change the `it` value in terminfo when altering this setting.
-#tabspaces: 4
-
 # Font configuration
 font:
-  # Normal (roman) font face
   normal:
-    # Font family
-    #
-    # Default:
-    #   - (macOS) Menlo
-    #   - (Linux/BSD) monospace
-    #   - (Windows) Consolas
-    family: JetBrains Mono Nerd Font # https://www.nerdfonts.com/font-downloads
+    family: JetBrains Mono Fallback # https://www.nerdfonts.com/font-downloads
+    # family: JetBrains Mono
     # family: FiraCode
 
     # The `style` can be specified to pick a specific face.
@@ -123,11 +45,8 @@ font:
 
   # Bold font face
   bold:
-    # Font family
-    #
-    # If the bold family is not specified, it will fall back to the
-    # value specified for the normal font.
-    family: JetBrains Mono Nerd Font
+    family: JetBrains Mono Fallback
+    # family: JetBrains Mono
     # family: FiraCode
 
     # The `style` can be specified to pick a specific face.
@@ -135,11 +54,8 @@ font:
 
   # Italic font face
   italic:
-    # Font family
-    #
-    # If the italic family is not specified, it will fall back to the
-    # value specified for the normal font.
-    family: JetBrains Mono Nerd Font
+    family: JetBrains Mono Fallback
+    # family: JetBrains Mono
     # family: FiraCode
 
     # The `style` can be specified to pick a specific face.
@@ -147,11 +63,8 @@ font:
 
   # Bold italic font face
   bold_italic:
-    # Font family
-    #
-    # If the bold italic family is not specified, it will fall back to the
-    # value specified for the normal font.
-    family: JetBrains Mono Nerd Font
+    family: JetBrains Mono Fallback
+    # family: JetBrains Mono
     # family: FiraCode
 
     # The `style` can be specified to pick a specific face.
@@ -165,13 +78,6 @@ font:
   offset:
     x: 0
     y: -2
-
-  # Glyph offset determines the locations of the glyphs within their cells with
-  # the default being at the bottom. Increasing `x` moves the glyph to the right,
-  # increasing `y` moves the glyph upwards.
-  # glyph_offset:
-  #  x: 0
-  #  y: 0
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
@@ -274,12 +180,17 @@ Kanagawa: &Kanagawa
       # background: '#282828'
       # background: '#202020'
       # background: '#272727'
-      background: '#131610'
+      # background: '#131610'
+      # background: '#131310'
+      # background: '#121212'
 
       # soft contrast: background = '0x32302f'
       # background: '#32302f'
       # foreground: '#ebdbb2'
-      foreground: '#cccccc'
+      # foreground: '#cccccc'
+
+      background: '#000000'
+      foreground: '#FFFFFF'
 
     # Normal colors
     normal:
