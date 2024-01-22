@@ -126,6 +126,17 @@ require('lazy').setup({
 
     { 'nvim-tree/nvim-web-devicons', opts = {}, lazy = true },
 
+    -- change closures, press: cs"' to change this line from "" to ''
+    { "tpope/vim-surround" },
+
+    {
+        "ggandor/leap.nvim",
+        dependencies = { "tpope/vim-repeat" },
+        config = function()
+            require("leap").create_default_mappings(true)
+        end
+    },
+
     -- Git related plugins
     { 'tpope/vim-fugitive' },
     { 'tpope/vim-rhubarb' },
@@ -233,12 +244,15 @@ require('lazy').setup({
             end,
         },
     },
-    {
-        -- 'psliwka/vim-smoothie'
-        'karb94/neoscroll.nvim',
+    { -- wildmenu autocompletion
+        'gelguy/wilder.nvim',
+        dependencies = {
+            "romgrk/fzy-lua-native"
+        },
         config = function()
-            require('neoscroll').setup()
-        end
+            local wilder = require('wilder')
+            wilder.setup({modes = {':', '/', '?'}})
+        end,
     },
 
     require("themes").gruvbox_material,
@@ -350,9 +364,27 @@ require('lazy').setup({
             }
         end
     },
-    {   -- multiples cursor
-        "mg979/vim-visual-multi",
+    {
+        "brenton-leighton/multiple-cursors.nvim",
+        opts = {},
+        version = "*",
+        keys = {
+            -- {"<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i"}},
+            -- {"<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i"}},
+            {"<C-S-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i"}},
+            {"<C-S-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i"}},
+            -- {"<C-LeftMouse>", "<Cmd>MultipleCursorsMouseAddDelete<CR>", mode = {"n", "i"}},
+            {"<leader>d", "<Cmd>MultipleCursorsAddToWordUnderCursor<CR>", mode = {"n", "v"}},
+        },
     },
+    {
+        "sourcegraph/sg.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+        },
+    },
+
     -- { -- init screen
     --     "goolord/alpha-nvim",
     --     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -361,17 +393,17 @@ require('lazy').setup({
     --         require'alpha'.setup(require'alpha.themes.dashboard'.config)
     --     end
     -- },
-    { -- nim treesitter
-        "alaviss/nim.nvim"
-    },
-    {
-      'sigmaSd/nim-nvim-basic',
-      config = function()
-        require("nim-nvim").setup()
-      end,
-      -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
-      ft = "nim"
-    }
+    -- { -- nim treesitter
+    --     "alaviss/nim.nvim"
+    -- },
+    -- {
+    --   'sigmaSd/nim-nvim-basic',
+    --   config = function()
+    --     require("nim-nvim").setup()
+    --   end,
+    --   -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
+    --   ft = "nim"
+    -- }
 }, {})
 
 -- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
@@ -538,6 +570,13 @@ local on_attach = function(_, bufnr)
     end, '[W]orkspace [L]ist Folders')
 end
 
+require("sg").setup {
+    -- Pass your own custom attach function
+    --    If you do not pass your own attach function, then the following maps are provide:
+    --        - gd -> goto definition
+    --        - gr -> goto references
+    on_attach = on_attach,
+}
 -- Enable the following language servers
 local runtime_library = vim.api.nvim_get_runtime_file("", true)
 table.insert(runtime_library, "${3rd}/Defold/library")
@@ -924,7 +963,7 @@ vim.keymap.set('n', "<C-k>", "<C-w>k", set_opts("Move up window"))
 vim.keymap.set('n', "<C-l>", "<C-w>l", set_opts("Move right window"))
 
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
-vim.keymap.set("n", "<C-b>", ":Telescope file_browser<CR>", set_opts("File browser")) -- File browser
+vim.keymap.set("n", "<leader>e>", ":Telescope file_browser<CR>", set_opts("File browser")) -- File browser
 
 vim.keymap.set("v", "<leader>d", [[c"<C-r>""<Esc>]], set_opts("Wrap selected word with double quotes")) -- wrap with double quotes
 vim.keymap.set("v", "<leader>q", [[c'<C-r>"'<Esc>]], set_opts("Wrap selected word with single quotes")) -- wrap with single quotes
@@ -1008,6 +1047,12 @@ ls.add_snippets("zig", {
         t('log.print_str("'),
         i(1),
         t('", @src());'),
+        i(2),
+    }),
+    s("printlnstr", {
+        t('log.println_str('),
+        i(1),
+        t(', @src());'),
         i(2),
     }),
     s("printstrerr", {

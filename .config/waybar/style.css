@@ -20,15 +20,19 @@ window#waybar {
     background: transparent;
 }
 
-/* ====================== MONITOR 1 ======================= */
-.dp2 .modules-left {
-    background-color: rgba(0, 43, 51, 0.85);
-    margin: 0 0 0 2px;
+window#waybar.hidded {
+    opacity: 0.0;
 }
 
-.dp2 .modules-center {
-    background-color: transparent;
-}
+/* ====================== MONITOR 2 ======================= */
+/* .dp2 .modules-left { */
+/*     background-color: rgba(0, 43, 51, 0.85); */
+/*     margin: 0 0 0 2px; */
+/* } */
+
+/* .dp2 .modules-center { */
+/*     background-color: transparent; */
+/* } */
 
 .dp2 .modules-right {
     margin: 1px 2px 0px 0px;
@@ -61,15 +65,16 @@ window#waybar {
     margin: 0 0 0 0;
     padding: 0 5px;
 }
-/* ====================== MONITOR 2 ======================= */
+/* ====================== MONITOR 1 ======================= */
 .dp1 .modules-left {
-    background-color: rgba(0, 43, 51, 0.85);
-    margin: 0 0 0 0px;
+    opacity: 0.0;
+    /* background-color: rgba(0, 43, 51, 0.85); */
+    /* margin: 0 0 0 0px; */
 }
 
 .dp1 .modules-center {
-    /* background-color: rgba(0, 43, 51, 0.85); */
-    background-color: transparent;
+    /* background-color: transparent; */
+    opacity: 0.0;
 }
 
 /* .dp2 .modules-right { */

@@ -5,9 +5,9 @@
     "mode": "hide",
     "output": "DP-2",
     "height": 33,
+    "width": 2,
     "spacing": 2, // Gaps between modules
     // "modules-left": ["hyprland/window"],
-    "modules-center": [],
     "modules-right": ["hyprland/workspaces", "sway/mode"],
 
     "sway/mode": {
@@ -28,6 +28,8 @@
     "output": "DP-1",
     "height": 24,
     "spacing": 2, // Gaps between modules
+    "modules-left": [],
+    "modules-center": [],
     // "modules-left": [
     //     "hyprland/window"
     // ],

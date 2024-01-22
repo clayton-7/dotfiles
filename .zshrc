@@ -29,4 +29,5 @@ INSERT_MODE_INDICATOR="%F{blue}+%f"
 TIMER_FORMAT='[%d]'
 TIMER_PRECISION=2
 
+source ~/.cody_auth.sh
 source $ZSH/oh-my-zsh.sh
