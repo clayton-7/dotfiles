@@ -1,12 +1,19 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.opt.showmode = false
 vim.opt.so = 9999 -- cursor always on center
+
+-- Sets how neovim will display certain whitespace in the editor.
+vim.opt.list = true
+vim.opt.listchars = { tab = '->', trail = '·', nbsp = '␣' }
+
+vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 
 -- enable highlight groups
 vim.opt.termguicolors = true
 
 vim.opt.smartindent = true
-vim.o.cursorline = true
+-- vim.o.cursorline = true -- highlight current line
 vim.cmd("set rnu")
 vim.cmd("set guicursor=n-v-c-i:block")
 
@@ -127,7 +134,7 @@ require('lazy').setup({
     { 'nvim-tree/nvim-web-devicons', opts = {}, lazy = true },
 
     -- change closures, press: cs"' to change this line from "" to ''
-    { "tpope/vim-surround" },
+    -- { "tpope/vim-surround" },
 
     {
         "ggandor/leap.nvim",
@@ -150,6 +157,7 @@ require('lazy').setup({
             -- Automatically install LSPs to stdpath for neovim
             { 'williamboman/mason.nvim', config = true },
             'williamboman/mason-lspconfig.nvim',
+            'WhoIsSethDaniel/mason-tool-installer.nvim',
 
             -- Useful status updates for LSP, NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
             {
@@ -217,12 +225,35 @@ require('lazy').setup({
         },
     },
 
-    -- Useful plugin to show you pending keybinds.
-    { 'folke/which-key.nvim', opts = {} },
+    { -- Useful plugin to show you pending keybinds.
+        'folke/which-key.nvim',
+        event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+        config = function() -- This is the function that runs, AFTER loading
+            require('which-key').setup()
 
+            -- Document existing key chains
+            require('which-key').register {
+                ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+                ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+                ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+                ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+                ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+            }
+        end,
+    },
     {
-        -- Adds git related signs to the gutter, as well as utilities for managing changes
-        'lewis6991/gitsigns.nvim',
+        "ray-x/lsp_signature.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("lsp_signature").setup{
+                hint_prefix = " "
+            }
+        end
+
+    },
+
+    { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
         opts = {
             -- See `:help gitsigns.txt`
             signs = {
@@ -255,7 +286,10 @@ require('lazy').setup({
         end,
     },
 
-    require("themes").gruvbox_material,
+    -- require("themes").gruvbox_material,
+    -- require("themes").aurora,
+    -- require("themes").onedark,
+    require("themes").catppuccin,
 
     {
         "Exafunction/codeium.nvim",
@@ -309,6 +343,7 @@ require('lazy').setup({
     -- Fuzzy Finder (files, lsp, etc)
     {
         'nvim-telescope/telescope.nvim',
+        event = 'VimEnter',
         branch = '0.1.x',
         dependencies = {
             'nvim-lua/plenary.nvim',
@@ -320,10 +355,9 @@ require('lazy').setup({
             {
                 'nvim-telescope/telescope-fzf-native.nvim',
                 build = 'make',
-                cond = function()
-                    return vim.fn.executable('make') == 1
-                end,
+                cond = function() return vim.fn.executable('make') == 1 end,
             },
+            { 'nvim-tree/nvim-web-devicons' }
         },
     },
 
@@ -344,13 +378,12 @@ require('lazy').setup({
                     expandtab = true
                 },
                 languages = {
-                    -- go = {
-                    --     tabwidth = 4,
-                    --     expandtab = false
-                    -- },
-
                     nim = {
                         tabwidth = 2,
+                        expandtab = true
+                    },
+                    hare = {
+                        tabwidth = 8,
                         expandtab = true
                     },
                     {
@@ -378,6 +411,14 @@ require('lazy').setup({
         },
     },
     {
+        "mg979/vim-visual-multi",
+    },
+    {
+        "folke/todo-comments.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = { signs = false }
+    },
+    {
         "sourcegraph/sg.nvim",
         dependencies = {
             "nvim-lua/plenary.nvim",
@@ -396,14 +437,6 @@ require('lazy').setup({
     -- { -- nim treesitter
     --     "alaviss/nim.nvim"
     -- },
-    -- {
-    --   'sigmaSd/nim-nvim-basic',
-    --   config = function()
-    --     require("nim-nvim").setup()
-    --   end,
-    --   -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
-    --   ft = "nim"
-    -- }
 }, {})
 
 -- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
@@ -527,6 +560,7 @@ vim.filetype.add {
         gltf = "json",
         gui_script = "lua",    -- defold
         render_script = "lua", -- defold
+        v = "v", -- v lang
     },
 }
 
@@ -568,6 +602,15 @@ local on_attach = function(_, bufnr)
     nmap('<leader>wl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, '[W]orkspace [L]ist Folders')
+
+    require("lsp_signature").on_attach({
+        bind = true,
+        hint_enable = false,
+        -- handler_opts = {
+        --     border = "rounded"
+        -- },
+    }, bufnr)
+
 end
 
 require("sg").setup {
@@ -577,9 +620,6 @@ require("sg").setup {
     --        - gr -> goto references
     on_attach = on_attach,
 }
--- Enable the following language servers
-local runtime_library = vim.api.nvim_get_runtime_file("", true)
-table.insert(runtime_library, "${3rd}/Defold/library")
 
 local servers = {
     -- clangd = {},
@@ -601,7 +641,14 @@ local servers = {
             },
             workspace = {
                 checkThirdParty = false,
-                library = runtime_library,
+                -- library = {
+                --     "${3rd}/Defold/library"
+                --     unpack(vim.api.nvim_get_runtime_file('', true)),
+                -- }
+                library = {
+                    "${3rd}/Defold/library",
+                    vim.env.VIMRUNTIME,
+                },
             },
             telemetry = { enable = false },
         },
@@ -651,56 +698,20 @@ cmp.setup {
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete {},
-        ['<CR>'] = cmp.mapping.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
-        },
-        -- jump forwards in snippet positions
-        ['<C-Tab>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(1) then
-                luasnip.jump(1)
+        ['<CR>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = true },
+        ['<C-y>'] = cmp.mapping.confirm { select = true }, -- confirm without replace
 
-            else
-                fallback()
-            end
-
-        end, { 'i', 's' }),
-
-        -- jump backwards in snippet positions
-        ['<C-S-Tab>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(-1) then
-                luasnip.jump(-1)
-
-            else
-                fallback()
-            end
-
-        end, { 'i', 's' }),
-
-        ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_next_item()
-
-            elseif luasnip.expand_or_locally_jumpable() then
+        -- move to the next snippet
+        ['<C-l>'] = cmp.mapping(function()
+            if luasnip.expand_or_locally_jumpable() then
                 luasnip.expand_or_jump()
-
-            elseif luasnip.jumpable(1) then
-                luasnip.jump(1)
-
-            else
-                fallback()
             end
         end, { 'i', 's' }),
 
-        ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item()
-
-            elseif luasnip.locally_jumpable(-1) then
+        -- move to the previous snippet
+        ['<C-h>'] = cmp.mapping(function()
+            if luasnip.locally_jumpable(-1) then
                 luasnip.jump(-1)
-
-            else
-                fallback()
             end
         end, { 'i', 's' }),
     },
@@ -709,7 +720,6 @@ cmp.setup {
         documentation = cmp.config.window.bordered(),
     },
     sources = {
-        { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lsp' },
         { name = "codeium" },
         { name = 'luasnip' },
@@ -743,6 +753,7 @@ vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', n
 vim.fn.sign_define('DapStopped', { text = '➡', texthl = '', linehl = '', numhl = '' })
 
 local function get_executable_path()
+    -- TODO: check if file exists!
     local handle = io.popen('jq ".[0].output" compile_commands.json')
     if handle == nil then return end
 
@@ -864,6 +875,16 @@ vim.keymap.set({ 'n', 't' }, "<leader>5", function()
     elseif vim.bo.filetype == "zig" then
         set_terminal(true)
         vim.cmd('TermExec cmd="clear && zig build run"')
+
+    elseif vim.bo.filetype == "rust" then
+        set_terminal(true)
+        vim.cmd('TermExec cmd="clear && cargo run"')
+
+    elseif vim.bo.filetype == "nim" then
+        set_terminal(true)
+        vim.cmd('TermExec cmd="clear && nim --verbosity:0 r src/main.nim"') -- using nim because it's faster then nimble
+        -- vim.cmd('TermExec cmd="clear && nimble --verbosity:0 run"')
+        -- vim.cmd('TermExec cmd="clear && nimble run"')
     end
 
 end, set_opts("Debug start")) -- run debug
@@ -873,9 +894,16 @@ vim.keymap.set({ 'n', 't' }, "<leader>6", function()
         build(false)
 
     elseif vim.bo.filetype == "zig" then
-        -- set_terminal(true)
         vim.cmd('TermExec cmd="clear && zig build run"')
         set_terminal(false)
+
+    elseif vim.bo.filetype == "rust" then
+        vim.cmd('TermExec cmd="clear && cargo build"')
+        set_terminal(false)
+
+    elseif vim.bo.filetype == "nim" then
+        set_terminal(true)
+        vim.cmd('TermExec cmd="clear && nimble --mm:none -d:noCycleGC -d:release --opt:speed run"')
     end
 
 end, set_opts("Debug start")) -- run debug
@@ -895,13 +923,13 @@ vim.keymap.set('n', "<leader>9", dapui.eval, set_opts("Debug evaluate expression
 vim.keymap.set("n", "<leader>0", dapui.toggle, set_opts("Debug toggle UI"))
 
 -- put/remove tabs
--- vim.keymap.set("n", "<tab>", ":><CR>", { silent = true })
--- vim.keymap.set("n", "<S-tab>", ":<<CR>", { silent = true })
--- vim.keymap.set("v", "<tab>", ":><CR>gv<CR>k", { silent = true })
--- vim.keymap.set("v", "<S-tab>", ":<<CR>gv<CR>k", { silent = true })
+vim.keymap.set("n", "<tab>", ":><CR>", { silent = true })
+vim.keymap.set("n", "<S-tab>", ":<<CR>", { silent = true })
+vim.keymap.set("v", "<tab>", ":><CR>gv", { silent = true })
+vim.keymap.set("v", "<S-tab>", ":<<CR>gv", { silent = true })
 
-vim.keymap.set("n", "<tab>", "==", set_opts("Format line"))
-vim.keymap.set("v", "<tab>", "=", set_opts("Format block"))
+-- vim.keymap.set("n", "<tab>", "==", set_opts("Format line"))
+-- vim.keymap.set("v", "<tab>", "=", set_opts("Format block"))
 
 -- replace words
 vim.keymap.set("v", "<C-f>", ":s/old/new/g", set_opts("Replace block words"))
@@ -911,7 +939,7 @@ vim.keymap.set("n", "<leader>F", "*N:%s//new/gc", set_opts("Replace word under c
 vim.keymap.set('n', 'gi', telescope_bi.lsp_references, set_opts("[/] [G]oto [I]mplementation"))
 
 -- Clear highlights
-vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>", set_opts("Clear all highlights"))
+vim.keymap.set('n', '<Esc>', "<cmd>nohlsearch<CR>", set_opts("Clear all highlights"))
 
 -- open/close git diff
 vim.opt.fillchars:append { diff = "╱" } -- diagonal line on diffs
@@ -941,9 +969,9 @@ vim.keymap.set({ 'n', 't' }, '<leader>t', "<cmd>ToggleTerm<CR>", set_opts("Toggl
 vim.keymap.set("n", "<A-o>", function()
     local extension = vim.fn.expand("%:e")
 
-    if extension == "c" then
+    if extension == "c" or extension == "cpp" then
         vim.cmd(":e %<.h")
-    elseif extension == "h" then
+    elseif extension == "h" or extension == "hpp" then
         vim.cmd(":e %<.c")
     end
 end, set_opts("Switch between header and source C files"))
@@ -990,6 +1018,8 @@ vim.keymap.set("c", "Qa", "qa")
 vim.keymap.set("c", "W", "w")
 vim.keymap.set("c", "WA", "wa")
 vim.keymap.set("c", "Wa", "wa")
+
+vim.keymap.set("n", "<leader>oc", ":CodyChat<CR>", set_opts("Open CodyChat"))
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
