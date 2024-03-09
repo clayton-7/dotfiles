@@ -7,8 +7,8 @@ export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
 export EDITOR='nvim'
 
-export TERM="kitty"
-export TERMINAL="kitty"
+export TERM="alacritty"
+export TERMINAL="alacritty"
 
 export MANPAGER="nvim +Man!"
 

@@ -189,7 +189,6 @@ M.gruvbox = {
         }
 
         vim.cmd("colorscheme gruvbox")
-
     end,
 }
 
@@ -234,16 +233,45 @@ M.gruvbox_material = {
     end,
 }
 
-M.aurora = {
-    "ray-x/aurora",
+M.gruvbox_baby = {
+    "luisiacc/gruvbox-baby",
+    lazy = false,
     priority = 1000,
     config = function()
-        vim.g.aurora_transparent = 1
-        vim.g.aurora_italic = 1
-        vim.g.aurora_darker = 1
-        vim.g.aurora_bold = 1
-        vim.cmd("colorscheme aurora")
-    end
+        -- vim.g.gruvbox_baby_transparent_mode = 1
+        vim.g.gruvbox_baby_background_color = "dark"
+        vim.cmd("colorscheme gruvbox-baby")
+    end,
+}
+
+M.bamboo = {
+    'ribru17/bamboo.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+        local bamboo = require('bamboo')
+        bamboo.setup{
+            -- transparent = true,
+            -- style = "light",
+            colors = {
+                blue = "#76abae"
+            },
+
+            highlights = {
+                ['@comment'] = { fg = '$grey' },
+                FloatShadow = { fg = "#ffffff" }, --
+                FloatBorder = { fg = "#ffffff" }, --
+                FloatTitle = { fg = "#ffffff" }, --
+                FloatFooter = { fg = "#ffffff" }, --
+                FloatShadowThrough = { fg = "#ffffff" }, --
+
+            }
+        }
+        bamboo.load()
+        -- vim.cmd("highlight NormalFloat guifg=#ffffff guibg=#121212")
+        vim.cmd("highlight Search guifg=#ffffff guibg=#307050")
+        vim.cmd("highlight CurSearch guifg=#121212 guibg=#00ff60")
+    end,
 }
 
 return M

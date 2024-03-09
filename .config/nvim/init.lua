@@ -287,24 +287,41 @@ require('lazy').setup({
     },
 
     -- require("themes").gruvbox_material,
-    -- require("themes").aurora,
     -- require("themes").onedark,
-    require("themes").catppuccin,
+    -- require("themes").catppuccin,
+    -- require("themes").gruvbox_baby,
+    require("themes").bamboo,
 
     {
         "Exafunction/codeium.nvim",
+        -- "Exafunction/codeium.vim",
         event = 'BufEnter',
         dependencies = {
             "nvim-lua/plenary.nvim",
             "hrsh7th/nvim-cmp",
         },
-        config = function()
+        config = function ()
+            vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
             require("codeium").setup{}
-            -- vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-            -- vim.keymap.set('i', '<C-z>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
-            -- vim.keymap.set('i', '<C-b>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
-            -- vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
-        end
+        end,
+    },
+
+    {
+        "Exafunction/codeium.vim",
+        event = 'BufEnter',
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "hrsh7th/nvim-cmp",
+        },
+        config = function ()
+            vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
+        end,
     },
     {
         -- Set lualine as statusline See `:help lualine.txt`
@@ -441,6 +458,13 @@ require('lazy').setup({
 
 -- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+
+local _border = "rounded"
+
+-- Rounded border for hover and signature
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = _border })
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = _border })
+vim.diagnostic.config{ float = { border = _border } }
 
 vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function() vim.highlight.on_yank() end,
@@ -695,6 +719,8 @@ cmp.setup {
     mapping = cmp.mapping.preset.insert {
         ['<C-n>'] = cmp.mapping.select_next_item(),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-j>'] = cmp.mapping.select_next_item(),
+        ['<C-k>'] = cmp.mapping.select_prev_item(),
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete {},
@@ -703,16 +729,12 @@ cmp.setup {
 
         -- move to the next snippet
         ['<C-l>'] = cmp.mapping(function()
-            if luasnip.expand_or_locally_jumpable() then
-                luasnip.expand_or_jump()
-            end
+            if luasnip.expand_or_locally_jumpable() then luasnip.expand_or_jump() end
         end, { 'i', 's' }),
 
         -- move to the previous snippet
         ['<C-h>'] = cmp.mapping(function()
-            if luasnip.locally_jumpable(-1) then
-                luasnip.jump(-1)
-            end
+            if luasnip.locally_jumpable(-1) then luasnip.jump(-1) end
         end, { 'i', 's' }),
     },
     window = {
