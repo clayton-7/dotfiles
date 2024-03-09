@@ -252,23 +252,17 @@ M.bamboo = {
         local bamboo = require('bamboo')
         bamboo.setup{
             -- transparent = true,
-            -- style = "light",
             colors = {
                 blue = "#76abae"
             },
 
             highlights = {
                 ['@comment'] = { fg = '$grey' },
-                FloatShadow = { fg = "#ffffff" }, --
-                FloatBorder = { fg = "#ffffff" }, --
-                FloatTitle = { fg = "#ffffff" }, --
-                FloatFooter = { fg = "#ffffff" }, --
-                FloatShadowThrough = { fg = "#ffffff" }, --
-
             }
         }
         bamboo.load()
-        -- vim.cmd("highlight NormalFloat guifg=#ffffff guibg=#121212")
+
+        -- search cursor highlights
         vim.cmd("highlight Search guifg=#ffffff guibg=#307050")
         vim.cmd("highlight CurSearch guifg=#121212 guibg=#00ff60")
     end,
