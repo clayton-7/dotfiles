@@ -294,34 +294,20 @@ require('lazy').setup({
     },
 
     {
-        "Exafunction/codeium.nvim",
-        -- "Exafunction/codeium.vim",
-        event = 'BufEnter',
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "hrsh7th/nvim-cmp",
-        },
-        config = function ()
-            vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
-            require("codeium").setup{}
-        end,
-    },
-
-    {
         "Exafunction/codeium.vim",
         event = 'BufEnter',
         dependencies = {
             "nvim-lua/plenary.nvim",
             "hrsh7th/nvim-cmp",
         },
+
         config = function ()
-            vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
-            vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
+            vim.g.codeium_disable_bindings = 1
+            vim.g.codeium_no_map_tab = 1
+
+            vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+            vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
         end,
     },
     {
@@ -1080,6 +1066,13 @@ end
 hide_bar()
 
 vim.keymap.set('n', '<leader>bh', hide_bar, set_opts("Toggle bottom bars"))
+
+local toggle_whitespace = true
+
+vim.keymap.set('n', '<leader>h', function()
+    toggle_whitespace = not toggle_whitespace
+    vim.opt.list = toggle_whitespace
+end, set_opts("Toggle whitespace characters"))
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
