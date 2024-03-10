@@ -246,14 +246,14 @@ M.gruvbox_baby = {
 
 M.bamboo = {
     'ribru17/bamboo.nvim',
-    lazy = false,
     priority = 1000,
     config = function()
         local bamboo = require('bamboo')
         bamboo.setup{
             -- transparent = true,
             colors = {
-                blue = "#76abae"
+                blue = "#76abae",
+                bg0 = "#242522",
             },
 
             highlights = {

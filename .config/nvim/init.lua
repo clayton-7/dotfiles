@@ -61,15 +61,18 @@ require('lazy').setup({
     {
         'akinsho/toggleterm.nvim',
         lazy = true,
-        config = function() require("toggleterm").setup() end
+        config = true,
     },
 
     -- debugger
-    { 'mfussenegger/nvim-dap' },
+    {
+        'mfussenegger/nvim-dap',
+        lazy = true,
+    },
     {
         "rcarriga/nvim-dap-ui",
         lazy = true,
-        requires = { "mfussenegger/nvim-dap" }
+        dependencies = { "mfussenegger/nvim-dap" }
     },
 
     -- highlight current word
@@ -85,7 +88,7 @@ require('lazy').setup({
             vim.cmd("highlight illuminatedWordWrite guifg=#ffffff guibg=none gui=underline,bold")
         end
     },
-    { 'booperlv/nvim-gomove' },                    -- move lines
+    { 'booperlv/nvim-gomove', event = "VeryLazy" }, -- move lines
 
     { -- session manager
         "Shatur/neovim-session-manager",
@@ -113,36 +116,43 @@ require('lazy').setup({
             }
         end,
     },
-    { 'nvim-treesitter/nvim-treesitter-context' }, -- show the function that you are in on top on the code
+    { 'nvim-treesitter/nvim-treesitter-context', event = "VeryLazy" }, -- show the function that you are in on top on the code
     {
         "nvim-telescope/telescope-file-browser.nvim",
+        lazy = true,
         dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
     },
     {
         "cappyzawa/trim.nvim",
-        config = function()
-            require("trim").setup{}
-        end
+        event = "VeryLazy",
+        config = true,
     },
     {
         "nvim-telescope/telescope-dap.nvim",
+        event = 'VeryLazy',
         config = function()
             require('telescope').load_extension('dap')
         end
     },
 
-    { 'nvim-tree/nvim-web-devicons', opts = {}, lazy = true },
+    { 'nvim-tree/nvim-web-devicons', config = true, lazy = true },
 
     -- change closures, press: cs"' to change this line from "" to ''
     -- { "tpope/vim-surround" },
-
     {
         "ggandor/leap.nvim",
+        event = 'VeryLazy',
         dependencies = { "tpope/vim-repeat" },
         config = function()
             require("leap").create_default_mappings(true)
         end
     },
+
+    -- require("themes").gruvbox_material,
+    -- require("themes").onedark,
+    -- require("themes").catppuccin,
+    -- require("themes").gruvbox_baby,
+    require("themes").bamboo,
 
     -- Git related plugins
     { 'tpope/vim-fugitive' },
@@ -155,16 +165,29 @@ require('lazy').setup({
         priority = 1000,
         dependencies = {
             -- Automatically install LSPs to stdpath for neovim
-            { 'williamboman/mason.nvim', config = true },
+            {
+                'williamboman/mason.nvim',
+                config = function()
+                    require('mason').setup{
+                        ui = {
+                            border = 'rounded',
+                        },
+                    }
+                end
+            },
             'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-            -- Useful status updates for LSP, NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
+            -- Useful status updates for LSP
             {
                 'j-hui/fidget.nvim',
-                tag = 'legacy',
+                -- tag = 'legacy',
+                lazy = true,
                 opts = {
-                    window = { blend = 0 },
+                    -- window = { blend = 0 },
+                    progress = {
+                        suppress_on_insert = true,
+                    },
                 }
             },
 
@@ -173,14 +196,9 @@ require('lazy').setup({
         },
     },
     {
-        'nacro90/numb.nvim', -- peek lines with :123
-        config = function()
-            require('numb').setup()
-        end
-    },
-    {
         -- undo
         "mbbill/undotree",
+        event = "VeryLazy",
         config = function()
             vim.g.undotree_WindowLayout = 2
             vim.g.undotree_SplitWidth = 50
@@ -210,11 +228,15 @@ require('lazy').setup({
         }
     },
 
-    { "tikhomirov/vim-glsl" }, -- glsl syntax highlight
+    { -- glsl syntax highlight
+        "tikhomirov/vim-glsl",
+        event = 'VeryLazy',
+    },
 
     {
         -- Autocompletion
         'hrsh7th/nvim-cmp',
+        event = 'VeryLazy',
         dependencies = {
             -- Snippet Engine & its associated nvim-cmp source
             'L3MON4D3/LuaSnip',
@@ -223,23 +245,6 @@ require('lazy').setup({
             -- Adds LSP completion capabilities
             'hrsh7th/cmp-nvim-lsp',
         },
-    },
-
-    { -- Useful plugin to show you pending keybinds.
-        'folke/which-key.nvim',
-        event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-        config = function() -- This is the function that runs, AFTER loading
-            require('which-key').setup()
-
-            -- Document existing key chains
-            require('which-key').register {
-                ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-                ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-                ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-                ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-                ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-            }
-        end,
     },
     {
         "ray-x/lsp_signature.nvim",
@@ -254,6 +259,7 @@ require('lazy').setup({
 
     { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+        event = 'VeryLazy',
         opts = {
             -- See `:help gitsigns.txt`
             signs = {
@@ -277,6 +283,7 @@ require('lazy').setup({
     },
     { -- wildmenu autocompletion
         'gelguy/wilder.nvim',
+        event = 'CmdlineEnter',
         dependencies = {
             "romgrk/fzy-lua-native"
         },
@@ -285,12 +292,6 @@ require('lazy').setup({
             wilder.setup({modes = {':', '/', '?'}})
         end,
     },
-
-    -- require("themes").gruvbox_material,
-    -- require("themes").onedark,
-    -- require("themes").catppuccin,
-    -- require("themes").gruvbox_baby,
-    require("themes").bamboo,
 
     {
         "Exafunction/codeium.nvim",
@@ -336,21 +337,10 @@ require('lazy').setup({
         },
     },
 
-    -- {
-    --   -- Add indentation guides even on blank lines
-    --   'lukas-reineke/indent-blankline.nvim',
-    --   main = "ibl",
-    --   opts = {
-    --     char = '│',
-    --   },
-    --   config = function()
-    --     require("ibl").setup {}
-    --   end,
-    -- },
-
     -- "gc" to comment visual regions/lines
     {
         'numToStr/Comment.nvim',
+        event = 'VeryLazy',
         config = function()
             require('Comment').setup()
             require('Comment.ft').set('wgsl', {'//%s', '/*%s*/'})
@@ -418,6 +408,7 @@ require('lazy').setup({
         "brenton-leighton/multiple-cursors.nvim",
         opts = {},
         version = "*",
+        event = "VeryLazy",
         keys = {
             -- {"<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i"}},
             -- {"<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i"}},
@@ -432,29 +423,44 @@ require('lazy').setup({
     },
     {
         "folke/todo-comments.nvim",
+        event = "VeryLazy",
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = { signs = false }
     },
     {
         "sourcegraph/sg.nvim",
+        -- event = "VeryLazy",
+        lazy = true,
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope.nvim",
         },
     },
+    {
+        "nvim-neo-tree/neo-tree.nvim",
+        event = "VeryLazy",
+        branch = "v3.x",
 
-    -- { -- init screen
-    --     "goolord/alpha-nvim",
-    --     dependencies = { "nvim-tree/nvim-web-devicons" },
-    --     config = function ()
-    --         -- require("alpha").setup(require("alpha.themes.startify").config)
-    --         require'alpha'.setup(require'alpha.themes.dashboard'.config)
-    --     end
-    -- },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+            "MunifTanjim/nui.nvim",
+        },
+        config = function()
+            require("neo-tree").setup{
+                window = {
+                    mappings = {
+                        ["<Esc>"] = "close_window",
+                    }
+                }
+            }
+        end
+    }
+
     -- { -- nim treesitter
     --     "alaviss/nim.nvim"
     -- },
-}, {})
+}, { ui = { border = "rounded" } })
 
 -- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -472,8 +478,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     pattern = '*',
 })
 
+
+local telescope = require('telescope')
+local telescope_bi = require('telescope.builtin')
 -- [[ Configure Telescope ]] See `:help telescope` and `:help telescope.setup()`
-require('telescope').setup {
+telescope.setup {
     defaults = {
         mappings = {
             i = {
@@ -503,9 +512,9 @@ require('telescope').setup {
 }
 
 -- TELESCOPE EXTENSIONS
-pcall(require('telescope').load_extension, 'fzf')
-require("telescope").load_extension("file_browser")
-require("telescope").load_extension("undo")
+pcall(telescope.load_extension, 'fzf')
+telescope.load_extension("file_browser")
+telescope.load_extension("undo")
 
 vim.filetype.add { extension = { wgsl = "wgsl" } }
 
@@ -608,11 +617,11 @@ local on_attach = function(_, bufnr)
     nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
     nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-    nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+    nmap('gr', telescope_bi.lsp_references, '[G]oto [R]eferences')
     nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
     nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-    nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-    nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+    nmap('<leader>ds', telescope_bi.lsp_document_symbols, '[D]ocument [S]ymbols')
+    nmap('<leader>ws', telescope_bi.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
     -- See `:help K` for why this keymap
     nmap('<leader>i', vim.lsp.buf.hover, 'Hover Documentation')
@@ -857,8 +866,6 @@ local function set_opts(desc, silent)
     return { desc = desc, silent = silent }
 end
 
-local telescope_bi = require('telescope.builtin')
-
 vim.keymap.set('n', '<leader>?', telescope_bi.oldfiles, set_opts("[?] Find recently opened files"))
 vim.keymap.set('n', '<leader><space>', telescope_bi.buffers, set_opts("[ ] Find existing buffers"))
 
@@ -1013,7 +1020,8 @@ vim.keymap.set('n', "<C-k>", "<C-w>k", set_opts("Move up window"))
 vim.keymap.set('n', "<C-l>", "<C-w>l", set_opts("Move right window"))
 
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
-vim.keymap.set("n", "<leader>e>", ":Telescope file_browser<CR>", set_opts("File browser")) -- File browser
+vim.keymap.set("n", "<leader>e", ':Telescope file_browser<CR>', set_opts("File browser")) -- File browser
+vim.keymap.set("n", "<C-b>", ':Neotree<CR>', set_opts("File browser")) -- File browser
 
 vim.keymap.set("v", "<leader>d", [[c"<C-r>""<Esc>]], set_opts("Wrap selected word with double quotes")) -- wrap with double quotes
 vim.keymap.set("v", "<leader>q", [[c'<C-r>"'<Esc>]], set_opts("Wrap selected word with single quotes")) -- wrap with single quotes
