@@ -65,10 +65,10 @@ y = -2
 
 [font]
 builtin_box_drawing = true
-size                = 10
+size                = 12
 
 [colors.primary]
-background = "#242522"
+background = "#000000"
 foreground = "#ffffff"
 #
 # [colors.normal]
@@ -112,8 +112,8 @@ cyan = '0x70c2be'
 white = '0xfff8f0'
 
 [colors.cursor]
-cursor = "CellForeground"
-text   = "CellBackground"
+cursor = "#00FF00"
+text   = "#000000"
 
 [colors.footer_bar]
 background = "#C0C5CE"

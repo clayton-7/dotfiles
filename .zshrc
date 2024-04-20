@@ -12,6 +12,8 @@ export TERMINAL="alacritty"
 
 export MANPAGER="nvim +Man!"
 
+set -o ignoreeof
+
 unsetopt BEEP # disable terminal beep
 zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
