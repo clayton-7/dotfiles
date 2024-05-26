@@ -25,21 +25,32 @@ vim.o.cmdheight = 0
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
     group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
-    callback = function()
-        vim.highlight.on_yank()
-    end,
+    callback = function() vim.highlight.on_yank() end,
 })
+
+vim.filetype.add {
+    extension = {
+        wgsl = "wgsl",
+        gltf = "json",
+    }
+}
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
     vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-end ---@diagnostic disable-next-line: undefined-field
+end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     -- "gc" to comment visual regions/lines
-    { "numToStr/Comment.nvim", opts = {} },
+    {
+        "numToStr/Comment.nvim",
+        config = function()
+            require('Comment').setup()
+            require('Comment.ft').set('wgsl', {'//%s', '/*%s*/'})
+        end,
+    },
     { -- trim whitespaces
         "cappyzawa/trim.nvim",
         event = "VeryLazy",
@@ -66,8 +77,11 @@ require("lazy").setup({
         "folke/which-key.nvim",
         event = "VimEnter", -- Sets the loading event to 'VimEnter'
         config = function() -- This is the function that runs, AFTER loading
-            require("which-key").setup()
-
+            require("which-key").setup{
+                 window = {
+                    border = "single"
+                },
+            }
             -- Document existing key chains
             require("which-key").register({
                 ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
@@ -158,7 +172,8 @@ require("lazy").setup({
         "neovim/nvim-lspconfig",
         dependencies = {
             -- Automatically install LSPs and related tools to stdpath for Neovim
-            { "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
+            -- { "williamboman/mason.nvim" },
+            { "williamboman/mason.nvim", opts = { ui = { border = "rounded" } } },
             "williamboman/mason-lspconfig.nvim",
             "WhoIsSethDaniel/mason-tool-installer.nvim",
 
@@ -351,6 +366,7 @@ require("lazy").setup({
     -- require("themes").catppuccin,
     -- require("themes").gruvbox_baby,
     require("themes").bamboo,
+    -- require("themes").darcula_solid,
     -- require("themes").tokyonight,
 
     -- Highlight todo, notes, etc in comments
@@ -378,6 +394,8 @@ require("lazy").setup({
             -- - sd'   - [S]urround [D]elete [']quotes
             -- - sr)'  - [S]urround [R]eplace [)] [']
             require("mini.surround").setup()
+
+            require("mini.diff").setup()
 
         end,
     },
@@ -524,6 +542,52 @@ require("lazy").setup({
             require("nvim-treesitter.configs").setup(opts)
         end,
     },
+    { -- session manager
+        "Shatur/neovim-session-manager",
+        priority = 1000,
+        config = function()
+            require('session_manager').setup {
+                sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
+                autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
+            }
+        end,
+    },
+    -- debugger
+    {
+        'mfussenegger/nvim-dap',
+        lazy = true,
+    },
+    {
+        "rcarriga/nvim-dap-ui",
+        lazy = true,
+        dependencies = { "mfussenegger/nvim-dap" }
+    },
+    {
+        "chrisgrieser/nvim-spider",
+        config = function()
+            local spider = require("spider")
+            vim.keymap.set({ "n", "o", "x" }, 'w', function() spider.motion('w') end, { silent = true })
+            vim.keymap.set({ "n", "o", "x" }, 'e', function() spider.motion('e') end, { silent = true })
+            vim.keymap.set({ "n", "o", "x" }, 'b', function() spider.motion('b') end, { silent = true })
+        end,
+    },
+    {
+        "Exafunction/codeium.vim",
+        event = 'BufEnter',
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "hrsh7th/nvim-cmp",
+        },
+
+        config = function ()
+            vim.g.codeium_disable_bindings = 1
+            vim.g.codeium_no_map_tab = 1
+
+            vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+            vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+            vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+        end,
+    },
 }, { ui = { border = "rounded" } })
 
 -- Rounded border for hover and signature
@@ -554,9 +618,12 @@ vim.keymap.set("n", "<C-S-c>", '"+yy')
 vim.keymap.set("v", "<C-S-c>", '"+y')
 vim.keymap.set("v", "p", '"_dP', { silent = true })
 
+vim.keymap.set("v", "y", 'ygv', { silent = true })
+vim.keymap.set("c", "w\\", 'w', { silent = true })
+
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
 vim.keymap.set("n", "<C-e>", ':Telescope file_browser<CR>', set_opts("File browser")) -- File browser
-vim.keymap.set("n", "<C-b>", ':Neotree toggle right<CR>', set_opts("File browser")) -- File browser
+vim.keymap.set("n", "<C-b>", ':Neotree toggle right filesystem reveal<CR>', set_opts("File browser")) -- File browser
 
 -- buffers
 vim.keymap.set("n", "<c-tab>", function() vim.cmd("bn") end, set_opts("Next buffer", true))
@@ -569,8 +636,29 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line")) -- go to the first word on the line
 vim.keymap.set({ 'n', 't' }, '<leader>t', "<cmd>ToggleTerm<CR>", set_opts("Toggle terminal"))
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', set_opts('Exit terminal mode'))
 
+vim.keymap.set("n", "<A-o>", ":ClangdSwitchSourceHeader<CR>", set_opts("switch between header and source"))
+vim.keymap.set("n", "<leader>sx", ":source %<CR><CR>", set_opts("Source current file", true))
+
+vim.keymap.set("n", "<leader>dt", ":lua MiniDiff.toggle_overlay()<CR>", set_opts("Toggle diff", true))
+
+local toggle_maximize = false
+vim.keymap.set("n", "<leader>tf", function()
+    if toggle_maximize then
+        vim.cmd("wincmd =")
+    else
+        if vim.fn.winwidth(0) == vim.o.columns then
+            vim.cmd("wincmd _")
+        else
+            vim.cmd("wincmd |")
+        end
+    end
+
+    toggle_maximize = not toggle_maximize
+end, { desc = "Toggle maximize window" })
+
+vim.keymap.set({ 'n', 'i', 'v','t' }, '<F1>', "<Esc>", set_opts())
 local hide_bottom_bar = false
 
 local function hide_bar()
@@ -591,7 +679,10 @@ local function hide_bar()
     end
 end
 
-vim.loop.new_timer():start(100, 0, vim.schedule_wrap(hide_bar))
+vim.loop.new_timer():start(100, 0, vim.schedule_wrap(function()
+    hide_bar()
+    vim.opt.formatoptions:remove{"c", "r", "o"}
+end))
 
 vim.keymap.set('n', '<leader>bh', hide_bar, set_opts("Toggle bottom bars"))
 

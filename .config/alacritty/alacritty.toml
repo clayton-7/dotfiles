@@ -8,7 +8,7 @@ TERM = "alacritty"
 decorations     = "none"
 dynamic_padding = false
 dynamic_title   = true
-opacity         = 0.89
+opacity         = 0.85
 
 [window.dimensions]
 columns = 0
@@ -68,7 +68,9 @@ builtin_box_drawing = true
 size                = 12
 
 [colors.primary]
-background = "#000000"
+# background = "#000000"
+# foreground = "#ffffff"
+background = "#101012"
 foreground = "#ffffff"
 #
 # [colors.normal]

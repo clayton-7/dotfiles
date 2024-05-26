@@ -48,6 +48,16 @@ M.darcula = {
     end
 }
 
+M.darcula_solid = {
+    "briones-gabriel/darcula-solid.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
+
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("darcula-solid")
+    end
+}
+
 M.catppuccin = {
     "catppuccin/nvim",
     priority = 1000,
@@ -250,7 +260,7 @@ M.bamboo = {
     config = function()
         local bamboo = require('bamboo')
         bamboo.setup{
-            -- transparent = true,
+            transparent = true,
             colors = {
                 blue = "#76abae",
                 bg0 = "#242522",
