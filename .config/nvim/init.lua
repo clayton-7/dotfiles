@@ -30,6 +30,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.filetype.add {
     extension = {
+        -- defold
+        script = "lua",
+        gui_script = "lua",
+        render_script = "lua",
+
         wgsl = "wgsl",
         gltf = "json",
     }
@@ -247,16 +252,6 @@ require("lazy").setup({
                             buffer = event.buf,
                             callback = vim.lsp.buf.clear_references,
                         })
-                    end
-
-                    -- The following autocommand is used to enable inlay hints in your
-                    -- code, if the language server you are using supports them
-                    --
-                    -- This may be unwanted, since they displace some of your code
-                    if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-                        map("<leader>th", function()
-                            vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
-                        end, "[T]oggle Inlay [H]ints")
                     end
                 end,
             })
@@ -563,22 +558,12 @@ require("lazy").setup({
         dependencies = { "mfussenegger/nvim-dap" }
     },
     {
-        "chrisgrieser/nvim-spider",
-        config = function()
-            local spider = require("spider")
-            vim.keymap.set({ "n", "o", "x" }, 'w', function() spider.motion('w') end, { silent = true })
-            vim.keymap.set({ "n", "o", "x" }, 'e', function() spider.motion('e') end, { silent = true })
-            vim.keymap.set({ "n", "o", "x" }, 'b', function() spider.motion('b') end, { silent = true })
-        end,
-    },
-    {
         "Exafunction/codeium.vim",
         event = 'BufEnter',
         dependencies = {
             "nvim-lua/plenary.nvim",
             "hrsh7th/nvim-cmp",
         },
-
         config = function ()
             vim.g.codeium_disable_bindings = 1
             vim.g.codeium_no_map_tab = 1
@@ -586,6 +571,7 @@ require("lazy").setup({
             vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
             vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
             vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+            vim.g.codeium_enabled = false
         end,
     },
 }, { ui = { border = "rounded" } })
@@ -622,7 +608,6 @@ vim.keymap.set("v", "y", 'ygv', { silent = true })
 vim.keymap.set("c", "w\\", 'w', { silent = true })
 
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
-vim.keymap.set("n", "<C-e>", ':Telescope file_browser<CR>', set_opts("File browser")) -- File browser
 vim.keymap.set("n", "<C-b>", ':Neotree toggle right filesystem reveal<CR>', set_opts("File browser")) -- File browser
 
 -- buffers
@@ -642,6 +627,9 @@ vim.keymap.set("n", "<A-o>", ":ClangdSwitchSourceHeader<CR>", set_opts("switch b
 vim.keymap.set("n", "<leader>sx", ":source %<CR><CR>", set_opts("Source current file", true))
 
 vim.keymap.set("n", "<leader>dt", ":lua MiniDiff.toggle_overlay()<CR>", set_opts("Toggle diff", true))
+vim.keymap.set("n", "<leader>ct", ":Codeium Toggle<CR>", set_opts("Toggle codeium", true))
+
+vim.keymap.set("i", "<C-e>", function() vim.lsp.buf.signature_help() end, set_opts("Signature help", true))
 
 local toggle_maximize = false
 vim.keymap.set("n", "<leader>tf", function()
