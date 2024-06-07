@@ -65,7 +65,7 @@ y = -2
 
 [font]
 builtin_box_drawing = true
-size                = 12
+size                = 10
 
 [colors.primary]
 # background = "#000000"

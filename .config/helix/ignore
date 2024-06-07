@@ -1,0 +1,13 @@
+*.mp3
+*.ttf
+*.otf
+*.svg
+*.jpg
+*.png
+*.glb
+*.bin
+*.tmp
+tmp/
+*.o
+*.so
+*.dylib

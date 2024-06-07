@@ -1,8 +1,6 @@
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=$HOME/.nimble/bin:$PATH
-export ZSH="$HOME/.config/.oh-my-zsh"
 
-# export ZSH_CUSTOM=$ZSH
 export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
 export EDITOR='nvim'
@@ -14,18 +12,34 @@ export MANPAGER="nvim +Man!"
 
 set -o ignoreeof
 
+HISTFILE=~/.zsh_history
+HISTSIZE=1000000
+SAVEHIST=1000000
+setopt appendhistory
+
+fpath=(/usr/local/share/zsh-completions $fpath)
+autoload -U compinit && compinit
+zmodload -i zsh/complist
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
+autoload -Uz compinit
+compinit
+
 unsetopt BEEP # disable terminal beep
-zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
-plugins=(git vi-mode history zsh-autosuggestions zsh-syntax-highlighting timer)
-
-# ZSH_THEME="robbyrussell" # clean, current path
-ZSH_THEME="nicoulaj" # clean, current full path
-# ZSH_THEME="imajes" # simple
-ENABLE_CORRECTION="true"
-INSERT_MODE_INDICATOR="%F{blue}+%f"
-TIMER_FORMAT='[%d]'
-TIMER_PRECISION=2
+# source ~/.config/.zsh/nicoulaj.zsh-theme
+source ~/.config/.zsh/common.zsh-theme
+source ~/.config/.zsh/config.zsh
+source ~/.config/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.config/.zsh/vi-mode.zsh
+source ~/.config/.zsh/timer.zsh
+source ~/.config/.zsh/zsh-history-substring-search.plugin.zsh
+source ~/.config/.zsh/zsh-history-substring-search.zsh
 
 source ~/.cody_auth.sh
-source $ZSH/oh-my-zsh.sh
+source ~/dev/vulkan_1.3.283.0/setup-env.sh
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
