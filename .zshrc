@@ -15,6 +15,10 @@ set -o ignoreeof
 HISTFILE=~/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
+ENABLE_CORRECTION="true"
+INSERT_MODE_INDICATOR="%F{blue}+%f"
+TIMER_FORMAT='[%d]'
+TIMER_PRECISION=2
 setopt appendhistory
 
 fpath=(/usr/local/share/zsh-completions $fpath)

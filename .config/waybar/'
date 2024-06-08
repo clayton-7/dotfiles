@@ -44,8 +44,8 @@ window#waybar.empty #window {
  /* * Exit */
 
 #custom-exit {
-    margin: 0px 25px 0px 0px;
-    padding:0 0 0 4px;
+    margin: 0px 20px 0px 0px;
+    padding:0 0 0 10px;
     /* font-size:16px; */
     color: #FFFFFF;
 }
@@ -64,7 +64,7 @@ window#waybar.empty #window {
     /* font-size: 14px; */
     color: @textcolor;
     border-radius: 15px;
-    margin: 0px 20px 0px 10px;
+    margin: 0px 15px 0px 0px;
 }
 
 #pulseaudio.muted {
@@ -100,8 +100,8 @@ label:focus {
  /* * Workspaces */
 
 #workspaces {
-    margin: 5px 1px 6px 1px;
-    padding: 0px 10px;
+    margin: 5px 1px 6px 10px;
+    padding: 0px 1px;
     border-radius: 15px;
     border: 0px;
     font-weight: bold;

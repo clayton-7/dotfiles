@@ -1,141 +1,32 @@
-[{
-    "layer": "top",
-    "position": "bottom",
-    "name": "dp2",
-    "mode": "hide",
-    "output": "DP-2",
-    "height": 33,
-    "width": 2,
-    "spacing": 2, // Gaps between modules
-    // "modules-left": ["hyprland/window"],
-    "modules-right": ["hyprland/workspaces", "sway/mode"],
-
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    "hyprland/workspaces": {
-        "on-click": "activate",
-    },
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-},
 {
+    // General Settings
+    "margin-bottom": 0,
+    "margin-top": 10,
     "layer": "top",
-    "position": "bottom",
-    "name": "dp1",
-    "mode": "hide",
-    "output": "DP-1",
-    "height": 24,
-    "spacing": 2, // Gaps between modules
-    "modules-left": [],
-    "modules-center": [],
-    // "modules-left": [
-    //     "hyprland/window"
-    // ],
-    // "modules-center": [
-    //     "tray",
-    //     "idle_inhibitor",
-    //     "cpu",
-    //     "memory",
-    //     "network",
-    //     "temperature",
-    //     "pulseaudio",
-    //     "custom/weather",
-    //     "clock",
-    //     "custom/power"
-    // ],
-    // "modules-right": [
-    //     "sway/mode",
-    //     "hyprland/workspaces",
-    // ],
-    "modules-right": [
-        "tray",
-        "sway/mode",
-        "idle_inhibitor",
-        "clock",
-        "custom/power",
+    "margin-left": 10,
+    "margin-right": 10,
+    "spacing": 0,
+
+    // Load Modules
+    "include": ["~/.config/waybar/modules.json"],
+
+    // Modules Left
+    "modules-left": [
         "hyprland/workspaces",
     ],
 
-    "hyprland/workspaces": {
-        "on-click": "activate",
-    },
-    // https://github.com/bjesus/wttrbar
-    "custom/weather": {
-        "format": " {}°C ",
-        "tooltip": true,
-        "interval": 900,
-        "exec": "wttrbar/target/release/wttrbar",
-        "return-type": "json"
-    },
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    "cpu": {
-        "format": "CPU:{usage}%",
-        "tooltip": false,
-        "interval": 1
-    },
-    "network": {
-        "format-ethernet": "{bandwidthDownBits:>}↓↑{bandwidthUpBits:>}",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP)",
-        "format-disconnected": "Disconnected ⚠",
-        "interval": 2,
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        },
-        //"on-click": "toggleRemote"
-    },
-    "tray": {
-        "icon-size": 15,
-        "spacing": 10
-    },
-    "temperature": {
-        // "thermal-zone": 2,
-        "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
-        "critical-threshold": 80,
-        // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}°C {icon}",
-        "format-icons": [""],
-        "interval": 2,
-    },
-    "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%d/%m/%Y  %H:%M:%S}",
-        "interval": 1,
-        "tooltip": true,
-        "on-click": "gnome-calendar"
-    },
-    "memory": {
-        "format": "MEM:{used}GB"
-    },
-    "pulseaudio": {
-        "format": "{volume}% {icon}",
-        "format-muted": "0% {icon}",
-        "format-source": "{volume}% ",
-        "format-source-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
-    },
-    "custom/power": {
-        "position": "bottom",
-        "format": " ",
-        "on-click": "swaynag -t warning -m '' -b 'Logout' 'hyprctl dispatch exit' -b 'Restart' 'shutdown -r now' -b 'Shutdown'  'shutdown -h now' --background=#393939ea --button-background=#33aa99 --button-border=#002b33 --border-bottom=#002b33"
-    },
-}]
-// vim: syntax=json
+    // Modules Center
+    "modules-center": [
+        "hyprland/window",
+        "custom/empty"
+    ],
+
+    // Modules Right
+    "modules-right": [
+        "tray",
+        "pulseaudio",
+        "group/hardware",
+        "clock",
+        "custom/exit",
+    ]
+}
