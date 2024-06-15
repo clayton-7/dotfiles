@@ -36,6 +36,8 @@ vim.filetype.add {
         render_script = "lua",
 
         wgsl = "wgsl",
+        vert = "glsl",
+        frag = "glsl",
         gltf = "json",
     }
 }

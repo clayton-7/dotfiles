@@ -260,7 +260,7 @@ M.bamboo = {
     config = function()
         local bamboo = require('bamboo')
         bamboo.setup{
-            transparent = true,
+            -- transparent = true,
             colors = {
                 blue = "#76abae",
                 bg0 = "#242522",

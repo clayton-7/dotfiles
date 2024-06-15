@@ -48,7 +48,7 @@
 
     // Clock
     "clock": {
-        "format": "{:%H:%M:%S - %D}",
+        "format": "{:%D - %H:%M:%S}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "on-click": "gnome-calendar",
         "interval": 1,
@@ -58,7 +58,7 @@
         "format": "/ K {short}"
     },
 
-    // Pulseaudio 
+    // Pulseaudio
     "pulseaudio": {
         "format": "{icon}{volume}%",
         "format-muted": " {format_source}",
@@ -67,6 +67,7 @@
         "format-icons": {
             "default": [" ", " ", " "]
         },
+        "ignored-sinks": ["Easy Effects Sink"],
         "on-click": "pavucontrol"
     },
 
