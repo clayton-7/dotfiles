@@ -58,6 +58,32 @@ require("lazy").setup({
             require('Comment.ft').set('wgsl', {'//%s', '/*%s*/'})
         end,
     },
+    { -- moving cursor more easily
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        keys = {
+            { "s", mode = { "n", "x", "o" }, function()
+                local visual_mode = vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == ""
+
+                require("flash").jump{
+                    pattern = ".", -- initialize pattern with any char
+                    search = {
+                        mode = function(pattern)
+                            if pattern:sub(1, 1) == "." then pattern = pattern:sub(2) end
+                            return ([[\<%s\w*\>]]):format(pattern), ([[\<%s]]):format(pattern)
+                        end,
+                    },
+                    jump = { pos = "range" },
+                }
+
+                if not visual_mode then
+                    vim.api.nvim_input('<Esc>')
+                else
+                    vim.api.nvim_input('V')
+                end
+            end, desc = "Flash" },
+        },
+    },
     { -- trim whitespaces
         "cappyzawa/trim.nvim",
         event = "VeryLazy",
@@ -331,8 +357,8 @@ require("lazy").setup({
                 mapping = cmp.mapping.preset.insert({
                     ["<C-n>"] = cmp.mapping.select_next_item(),
                     ["<C-p>"] = cmp.mapping.select_prev_item(),
-                    ['<C-j>'] = cmp.mapping.select_next_item(),
-                    ['<C-k>'] = cmp.mapping.select_prev_item(),
+                    -- ['<C-j>'] = cmp.mapping.select_next_item(),
+                    -- ['<C-k>'] = cmp.mapping.select_prev_item(),
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
@@ -365,6 +391,11 @@ require("lazy").setup({
     require("themes").bamboo,
     -- require("themes").darcula_solid,
     -- require("themes").tokyonight,
+    -- require("themes").kanagawa,
+    -- require("themes").aura_theme,
+    -- require("themes").nightfox,
+    -- require("themes").nordic,
+    -- require("themes").everforest,
 
     -- Highlight todo, notes, etc in comments
     {
@@ -573,7 +604,6 @@ require("lazy").setup({
             vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
             vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
             vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
-            vim.g.codeium_enabled = false
         end,
     },
 }, { ui = { border = "rounded" } })
@@ -632,6 +662,8 @@ vim.keymap.set("n", "<leader>dt", ":lua MiniDiff.toggle_overlay()<CR>", set_opts
 vim.keymap.set("n", "<leader>ct", ":Codeium Toggle<CR>", set_opts("Toggle codeium", true))
 
 vim.keymap.set("i", "<C-e>", function() vim.lsp.buf.signature_help() end, set_opts("Signature help", true))
+
+vim.keymap.set("n", "Ç", ":", set_opts())
 
 local toggle_maximize = false
 vim.keymap.set("n", "<leader>tf", function()

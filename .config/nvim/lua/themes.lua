@@ -96,7 +96,7 @@ M.catppuccin = {
                     crust = "#141617",
                 },
             },
-            transparent_background = true,
+            -- transparent_background = true,
             show_end_of_buffer = false,
             integration_default = false,
             integrations = {
@@ -211,9 +211,10 @@ M.everforest = {
         vim.g.everforest_dim_inactive_windows = 1
         vim.g.everforest_ui_contrast = "high"
         vim.g.everforest_diagnostic_virtual_text = "colored"
+        -- vim.g.everforest_transparent_background = 1
 
         vim.cmd("colorscheme everforest")
-        vim.cmd("highlight Normal guibg=#11130d")
+        -- vim.cmd("highlight Normal guibg=#11130d")
     end,
 }
 
@@ -260,9 +261,11 @@ M.bamboo = {
     config = function()
         local bamboo = require('bamboo')
         bamboo.setup{
+            style = 'multiplex',
             -- transparent = true,
             colors = {
-                blue = "#76abae",
+                -- blue = "#76abae",
+                blue = "#cbcd61",
                 bg0 = "#242522",
             },
 
@@ -284,6 +287,44 @@ M.tokyonight = {
         vim.cmd.colorscheme("tokyonight-night")
         vim.cmd.hi("Comment gui=none")
     end,
+}
+
+M.kanagawa = {
+    "rebelot/kanagawa.nvim",
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+        vim.cmd.colorscheme("kanagawa")
+    end,
+}
+
+M.aura_theme = {
+    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+    {
+        "baliestri/aura-theme",
+        lazy = false,
+        priority = 1000,
+        config = function(plugin)
+            vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
+            vim.cmd([[colorscheme aura-soft-dark-soft-text]])
+        end
+    }
+}
+
+M.nightfox = {
+    "EdenEast/nightfox.nvim",
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+        vim.cmd.colorscheme("nightfox")
+    end,
+}
+
+M.nordic = {
+    'AlexvZyl/nordic.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+        require('nordic').load()
+    end
 }
 
 return M

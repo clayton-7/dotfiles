@@ -1,8 +1,8 @@
-vim.keymap.set("n", "<leader>6", function()
+vim.keymap.set("n", "<leader>5", function()
     vim.cmd('TermExec cmd="clear && zig build run"')
 end, { desc = "build and run" })
 
-vim.keymap.set("n", "<leader>5", function()
+vim.keymap.set("n", "<leader>6", function()
     vim.cmd('TermExec cmd="clear && zig build run"')
     vim.cmd("ToggleTerm")
 
@@ -16,64 +16,102 @@ local i = ls.insert_node
 vim.g.zig_fmt_autosave = 0 -- disable autoformat zig
 
 ls.add_snippets("zig", {
-    s("print", {
-        t('log.print('),
+    s("trace", {
+        t('log.TRACE('),
         i(1),
         t(', @src());'),
         i(2),
     }),
-    s("println", {
-        t('log.println('),
+    s("tracef", {
+        t('log.TRACEF("'),
         i(1),
-        t(', @src());'),
+        t(' {'),
         i(2),
-    }),
-    s("printstr", {
-        t('log.print_str("'),
-        i(1),
-        t('", @src());'),
-        i(2),
-    }),
-    s("printlnstr", {
-        t('log.println_str('),
-        i(1),
-        t(', @src());'),
-        i(2),
-    }),
-    s("printstrerr", {
-        t('log.print_str_err("'),
-        i(1),
-        t('", @src());'),
-        i(2),
-    }),
-    s("printerr", {
-        t('log.print_err('),
-        i(1),
-        t(', @src());'),
-        i(2),
-    }),
-    s("printlnerr", {
-        t('log.println_err('),
-        i(1),
-        t(', @src());'),
-        i(2),
-    }),
-    s("printf", {
-        t('log.printf("{'),
-        i(1),
-        t('}", .{ '),
-        i(2),
-        t(' }, @src());'),
+        t('}\\n", .{ '),
         i(3),
+        t(' }, @src());'),
+        i(4),
     }),
 
-    s("printferr", {
-        t('log.printf_err("{'),
+    s("info", {
+        t('log.INFO('),
         i(1),
-        t('}", .{ '),
+        t(', @src());'),
         i(2),
-        t(' }, @src());'),
+    }),
+    s("infof", {
+        t('log.INFOF("'),
+        i(1),
+        t(' {'),
+        i(2),
+        t('}\\n", .{ '),
         i(3),
+        t(' }, @src());'),
+        i(4),
+    }),
+    s("debug", {
+        t('log.DEBUG('),
+        i(1),
+        t(', @src());'),
+        i(2),
+    }),
+    s("debugf", {
+        t('log.DEBUGF("'),
+        i(1),
+        t(' {'),
+        i(2),
+        t('}\\n", .{ '),
+        i(3),
+        t(' }, @src());'),
+        i(4),
+    }),
+    s("warn", {
+        t('log.warn('),
+        i(1),
+        t(', @src());'),
+        i(2),
+    }),
+    s("warnf", {
+        t('log.WARNF("'),
+        i(1),
+        t(' {'),
+        i(2),
+        t('}\\n", .{ '),
+        i(3),
+        t(' }, @src());'),
+        i(4),
+    }),
+    s("error", {
+        t('log.ERROR('),
+        i(1),
+        t(', @src());'),
+        i(2),
+    }),
+    s("errorf", {
+        t('log.ERRORF("'),
+        i(1),
+        t(' {'),
+        i(2),
+        t('}\\n", .{ '),
+        i(3),
+        t(' }, @src());'),
+        i(4),
+    }),
+    s("fatal", {
+        t('log.FATAL('),
+        i(1),
+        t(', @src());'),
+        i(2),
+    }),
+    s("FATALF", {
+        t('log.FATALF("'),
+        i(1),
+        t(' {'),
+        i(2),
+        t('}\\n", .{ '),
+        i(3),
+        t(' }, @src());'),
+        i(4),
     }),
     s("sizeof", {
         t('@sizeOf('),

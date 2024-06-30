@@ -25,10 +25,24 @@ fpath=(/usr/local/share/zsh-completions $fpath)
 autoload -U compinit && compinit
 zmodload -i zsh/complist
 
+# colors
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
+
+## case insensitive path-completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
 autoload -Uz compinit
 compinit
+
+# up and down completes the current command using history
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 
 unsetopt BEEP # disable terminal beep
 
@@ -39,11 +53,9 @@ source ~/.config/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.config/.zsh/vi-mode.zsh
 source ~/.config/.zsh/timer.zsh
-source ~/.config/.zsh/zsh-history-substring-search.plugin.zsh
 source ~/.config/.zsh/zsh-history-substring-search.zsh
 
-source ~/.cody_auth.sh
-source ~/dev/vulkan_1.3.283.0/setup-env.sh
+source ~/dev/vulkan*/setup-env.sh
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
