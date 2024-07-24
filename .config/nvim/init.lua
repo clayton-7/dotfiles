@@ -312,6 +312,22 @@ require("lazy").setup({
             })
         end,
     },
+    { -- show keymaps in popup
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        opts = {
+            notify = false,
+            win = {
+                border = "single"
+            },
+        },
+        keys = {
+            {
+                "<leader>?", function() require("which-key").show{ global = false } end,
+                desc = "Buffer Local Keymaps (which-key)",
+            },
+        },
+    },
     { -- Autocompletion
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
