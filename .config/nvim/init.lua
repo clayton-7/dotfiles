@@ -14,7 +14,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-vim.opt.list = true
+vim.opt.list = false
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.guicursor = "n-v-c-i:block"
@@ -106,31 +106,6 @@ require("lazy").setup({
             },
         },
     },
-    { -- Useful plugin to show you pending keybinds.
-        "folke/which-key.nvim",
-        event = "VimEnter", -- Sets the loading event to 'VimEnter'
-        config = function() -- This is the function that runs, AFTER loading
-            require("which-key").setup{
-                 window = {
-                    border = "single"
-                },
-            }
-            -- Document existing key chains
-            require("which-key").register({
-                ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-                ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-                ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-                ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-                ["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-                ["<leader>t"] = { name = "[T]oggle", _ = "which_key_ignore" },
-                ["<leader>h"] = { name = "Git [H]unk", _ = "which_key_ignore" },
-            })
-            -- visual mode
-            require("which-key").register({
-                ["<leader>h"] = { "Git [H]unk" },
-            }, { mode = "v" })
-        end,
-    },
     { -- Fuzzy Finder (files, lsp, etc)
         "nvim-telescope/telescope.nvim",
         event = "VimEnter",
@@ -157,9 +132,8 @@ require("lazy").setup({
                 },
                 defaults = {
                     mappings = {
-                        n = {
-                            ["<Esc>"] = false, -- do not close with Esc
-                            ["q"] = actions.close,
+                        i = {
+                            ["<Esc>"] = actions.close,
                         },
                     },
                 },
@@ -294,6 +268,23 @@ require("lazy").setup({
                             completion = {
                                 callSnippet = "Replace",
                             },
+
+                            diagnostics = {
+                                globals = {
+                                    "vim", "init", "on_message", "on_input", "gui", "vmath", "timer", "msg", "app", "hash",
+                                    "sys", "http", "pprint", "launcher", "window", "socket", "sound", "html5", "defos",
+                                    "update", "final", "websocket", "updater", "go", "appManager", "final", "webview", "rnd", "MD5",
+                                },
+                            },
+                            workspace = {
+                                checkThirdParty = false,
+                                library = {
+                                    "${3rd}/Defold/library",
+                                    "${3rd}/Cocos4.0/library",
+                                    vim.env.VIMRUNTIME,
+                                },
+                            },
+                            telemetry = { enable = false },
                         },
                     },
                 },
@@ -516,7 +507,7 @@ require("lazy").setup({
                         expandtab = true
                     },
                     {
-                        filetypes = { "go","python", "gdscript" },
+                        filetypes = { "go", "python", "gdscript", "v" },
                         config = {
                             tabwidth = 4,
                             expandtab = false
@@ -580,6 +571,16 @@ require("lazy").setup({
             }
         end,
     },
+    -- { -- session manager
+    --     "Shatur/neovim-session-manager",
+    --     priority = 1000,
+    --     config = function()
+    --         require('session_manager').setup {
+    --             sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
+    --             autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
+    --         }
+    --     end,
+    -- },
     -- debugger
     {
         'mfussenegger/nvim-dap',
@@ -664,6 +665,31 @@ vim.keymap.set("n", "<leader>ct", ":Codeium Toggle<CR>", set_opts("Toggle codeiu
 vim.keymap.set("i", "<C-e>", function() vim.lsp.buf.signature_help() end, set_opts("Signature help", true))
 
 vim.keymap.set("n", "Ç", ":", set_opts())
+vim.keymap.set({"n", "t"}, "<leader>cc", '<Esc> <C-\\><C-n>:q!<CR>', set_opts())
+
+vim.keymap.set("v", "<", '<gv', { silent = true })
+vim.keymap.set("v", ">", '>gv', { silent = true })
+
+vim.keymap.set("n", "<leader>st", ':TodoTelescope<CR>', { silent = true })
+
+
+-- close ToggleTerm if is open
+vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
+    if vim.fn.mode() == "t" or vim.fn.mode() == "i" then vim.cmd('ToggleTerm') end
+end))
+
+function Build(cmd)
+    vim.cmd('TermExec cmd="clear"')
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('6<C-w>j', true, false, true), 'n', true)
+
+    vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
+        vim.api.nvim_buf_delete(0, { force = true })
+
+        vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
+            vim.cmd('TermExec cmd="' .. cmd .. '"')
+        end))
+    end))
+end
 
 local toggle_maximize = false
 vim.keymap.set("n", "<leader>tf", function()
