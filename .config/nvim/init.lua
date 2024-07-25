@@ -312,27 +312,6 @@ require("lazy").setup({
             })
         end,
     },
-    {
-        "declancm/cinnamon.nvim",
-        event = "VeryLazy",
-        version = "*", -- use latest release
-        opts = {
-            keymaps = {
-                basic = true,
-                extra = true,
-            },
-            -- Only scroll the window
-            options = {
-                delay = 5,
-                mode = "window",
-
-                max_delta = {
-                    line = 200,
-                    time = 1000,
-                },
-            },
-        },
-    },
     { -- show keymaps in popup
         "folke/which-key.nvim",
         event = "VeryLazy",
@@ -606,6 +585,30 @@ require("lazy").setup({
                 sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
                 autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
             }
+        end,
+    },
+    { -- extended increment/decrement
+        "monaqa/dial.nvim",
+        event = "VeryLazy",
+        config = function()
+            local augend = require("dial.augend")
+            require("dial.config").augends:register_group{
+                default = {
+                    augend.integer.alias.decimal_int,
+                    augend.integer.alias.hex,
+                    augend.constant.alias.bool,
+                    augend.integer.alias.octal,
+                    augend.integer.alias.binary,
+                    augend.date.new {
+                        pattern = "%Y/%m/%d",
+                        default_kind = "day",
+                    },
+                },
+            }
+
+            local map = require("dial.map")
+            vim.keymap.set("n", "<C-a>", function() map.manipulate("increment", "normal") end)
+            vim.keymap.set("n", "<C-x>", function() map.manipulate("decrement", "normal") end)
         end,
     },
     -- { -- session manager
