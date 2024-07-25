@@ -312,6 +312,27 @@ require("lazy").setup({
             })
         end,
     },
+    {
+        "declancm/cinnamon.nvim",
+        event = "VeryLazy",
+        version = "*", -- use latest release
+        opts = {
+            keymaps = {
+                basic = true,
+                extra = true,
+            },
+            -- Only scroll the window
+            options = {
+                delay = 5,
+                mode = "window",
+
+                max_delta = {
+                    line = 200,
+                    time = 1000,
+                },
+            },
+        },
+    },
     { -- show keymaps in popup
         "folke/which-key.nvim",
         event = "VeryLazy",
