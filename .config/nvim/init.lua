@@ -13,8 +13,9 @@ vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
+vim.opt.cmdheight = 0
 vim.opt.splitbelow = true
-vim.opt.list = false
+vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.guicursor = "n-v-c-i:block"
@@ -39,6 +40,11 @@ vim.filetype.add {
         vert = "glsl",
         frag = "glsl",
         gltf = "json",
+
+        v = "v",
+        jule = "rust",
+        pb = 'purebasic',
+        pbi = 'purebasic',
     }
 }
 
@@ -50,65 +56,27 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    -- "gc" to comment visual regions/lines
-    {
+    { -- "gc" to comment visual regions/lines
         "numToStr/Comment.nvim",
+        event = "InsertEnter",
         config = function()
             require('Comment').setup()
             require('Comment.ft').set('wgsl', {'//%s', '/*%s*/'})
         end,
     },
-    { -- moving cursor more easily
-        "folke/flash.nvim",
-        event = "VeryLazy",
-        keys = {
-            { "s", mode = { "n", "x", "o" }, function()
-                local visual_mode = vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == ""
-
-                require("flash").jump{
-                    pattern = ".", -- initialize pattern with any char
-                    search = {
-                        mode = function(pattern)
-                            if pattern:sub(1, 1) == "." then pattern = pattern:sub(2) end
-                            return ([[\<%s\w*\>]]):format(pattern), ([[\<%s]]):format(pattern)
-                        end,
-                    },
-                    jump = { pos = "range" },
-                }
-
-                if not visual_mode then
-                    vim.api.nvim_input('<Esc>')
-                else
-                    vim.api.nvim_input('V')
-                end
-            end, desc = "Flash" },
-        },
-    },
     { -- trim whitespaces
         "cappyzawa/trim.nvim",
-        event = "VeryLazy",
+        event = "InsertEnter",
         config = true,
     },
     { -- terminal
         'akinsho/toggleterm.nvim',
+        event = "InsertEnter",
         config = true,
-    },
-    { -- Adds git related signs to the gutter, as well as utilities for managing changes
-        "lewis6991/gitsigns.nvim",
-        opts = {
-            signs = {
-                add = { text = "▌" }, -- https://www.fileformat.info/info/charset/UTF-32/list.htm?start=8680
-                change = { text = "▎" },
-                delete = { text = "▄" },
-                topdelete = { text = "▔" },
-                changedelete = { text = "▏" },
-                untracked = { text = "┆" },
-            },
-        },
     },
     { -- Fuzzy Finder (files, lsp, etc)
         "nvim-telescope/telescope.nvim",
-        event = "VimEnter",
+        event = "InsertEnter",
         branch = "0.1.x",
         dependencies = {
             "nvim-lua/plenary.nvim",
@@ -136,6 +104,24 @@ require("lazy").setup({
                             ["<Esc>"] = actions.close,
                         },
                     },
+                    buffer_previewer_maker = function(filepath, bufnr, opts)
+                        filepath = vim.fn.expand(filepath)
+                        require('plenary.job'):new({
+                            command = 'file',
+                            args = { '--mime-type', '-b', filepath },
+                            on_exit = function(j)
+                                local mime_type = vim.split(j:result()[1], '/')[1]
+                                if mime_type == "text" then
+                                    require('telescope.previewers').buffer_previewer_maker(filepath, bufnr, opts)
+                                else
+                                    -- maybe we want to write something to the buffer here
+                                    vim.schedule(function()
+                                        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { 'BINARY' })
+                                    end)
+                                end
+                            end
+                        }):sync()
+                    end
                 },
             })
 
@@ -145,16 +131,16 @@ require("lazy").setup({
 
             -- See `:help telescope.builtin`
             local builtin = require("telescope.builtin")
-            vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
-            vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
-            vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-            vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
-            vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
-            vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-            vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-            vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
-            vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-            vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+            vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Search Help" })
+            vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "Search Keymaps" })
+            vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Search Files" })
+            vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "Search Select Telescope" })
+            vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "Search current Word" })
+            vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Search by Grep" })
+            vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "Search Diagnostics" })
+            vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "Search Resume" })
+            vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = 'Search Recent Files ("." for repeat)' })
+            vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "Find existing buffers" })
 
             -- Slightly advanced example of overriding default behavior and theme
             vim.keymap.set("n", "<leader>/", function()
@@ -163,7 +149,7 @@ require("lazy").setup({
                     winblend = 10,
                     previewer = false,
                 }))
-            end, { desc = "[/] Fuzzily search in current buffer" })
+            end, { desc = "Fuzzily search in current buffer" })
 
             --  See `:help telescope.builtin.live_grep()` for information about particular keys
             vim.keymap.set("n", "<leader>s/", function()
@@ -171,12 +157,13 @@ require("lazy").setup({
                     grep_open_files = true,
                     prompt_title = "Live Grep in Open Files",
                 })
-            end, { desc = "[S]earch [/] in Open Files" })
+            end, { desc = "Search in Open Files" })
         end,
     },
 
     { -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
+        event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             -- Automatically install LSPs and related tools to stdpath for Neovim
             -- { "williamboman/mason.nvim" },
@@ -194,67 +181,19 @@ require("lazy").setup({
                         vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
                     end
 
-                    -- Jump to the definition of the word under your cursor.
-                    --  This is where a variable was first declared, or where a function is defined, etc.
-                    --  To jump back, press <C-t>.
-                    map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+                    local builtin = require("telescope.builtin")
 
-                    -- Find references for the word under your cursor.
-                    map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-
-                    -- Jump to the implementation of the word under your cursor.
-                    --  Useful when your language has ways of declaring types without an actual implementation.
-                    map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-
-                    -- Jump to the type of the word under your cursor.
-                    --  Useful when you're not sure what type a variable is and you want to see
-                    --  the definition of its *type*, not where it was *defined*.
-                    map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
-
-                    -- Fuzzy find all the symbols in your current document.
-                    --  Symbols are things like variables, functions, types, etc.
-                    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-
-                    -- Fuzzy find all the symbols in your current workspace.
-                    --  Similar to document symbols, except searches over your entire project.
-                    map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-
-                    -- Rename the variable under your cursor.
-                    --  Most Language Servers support renaming across files, etc.
-                    map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-
-                    -- Execute a code action, usually your cursor needs to be on top of an error
-                    -- or a suggestion from your LSP for this to activate.
-                    map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-                    -- Format code
+                    map("gd", builtin.lsp_definitions, "Goto Definition")
+                    map("gr", builtin.lsp_references, "Goto References")
+                    map("gI", builtin.lsp_implementations, "Goto Implementation")
+                    map("<leader>D", builtin.lsp_type_definitions, "Type Definition")
+                    map("<leader>ds", builtin.lsp_document_symbols, "Document Symbols")
+                    map("<leader>ws", builtin.lsp_dynamic_workspace_symbols, "Workspace Symbols")
+                    map("<leader>rn", vim.lsp.buf.rename, "Rename")
+                    map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
                     map('<leader>bf', vim.lsp.buf.format, 'format file')
-
-                    -- Opens a popup that displays documentation about the word under your cursor
-                    --  See `:help K` for why this keymap.
                     map("K", vim.lsp.buf.hover, "Hover Documentation")
-
-                    -- NOTE: This is not Goto Definition, this is Goto Declaration.
-                    --  For example, in C this would take you to the header.
-                    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
-                    -- The following two autocommands are used to highlight references of the
-                    -- word under your cursor when your cursor rests there for a little while.
-                    --    See `:help CursorHold` for information about when this is executed
-                    --
-                    -- When you move your cursor, the highlights will be cleared (the second autocommand).
-                    local client = vim.lsp.get_client_by_id(event.data.client_id)
-                    if client and client.server_capabilities.documentHighlightProvider then
-                        vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-                            buffer = event.buf,
-                            callback = vim.lsp.buf.document_highlight,
-                        })
-
-                        vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-                            buffer = event.buf,
-                            callback = vim.lsp.buf.clear_references,
-                        })
-                    end
+                    map("gD", vim.lsp.buf.declaration, "Goto Declaration")
                 end,
             })
 
@@ -311,22 +250,6 @@ require("lazy").setup({
                 },
             })
         end,
-    },
-    { -- show keymaps in popup
-        "folke/which-key.nvim",
-        event = "VeryLazy",
-        opts = {
-            notify = false,
-            win = {
-                border = "single"
-            },
-        },
-        keys = {
-            {
-                "<leader>?", function() require("which-key").show{ global = false } end,
-                desc = "Buffer Local Keymaps (which-key)",
-            },
-        },
     },
     { -- Autocompletion
         "hrsh7th/nvim-cmp",
@@ -391,11 +314,18 @@ require("lazy").setup({
             })
         end,
     },
+    require("themes").bamboo,
     -- require("themes").gruvbox_material,
     -- require("themes").onedark,
     -- require("themes").catppuccin,
     -- require("themes").gruvbox_baby,
-    require("themes").bamboo,
+    -- require("themes").aquarium,
+    -- require("themes").komau,
+    -- require("themes").hybrid,
+    -- require("themes").citruszest,
+    -- require("themes").no_clown_fiesta,
+    -- require("themes").modus,
+    -- require("themes").mellow,
     -- require("themes").darcula_solid,
     -- require("themes").tokyonight,
     -- require("themes").kanagawa,
@@ -407,39 +337,92 @@ require("lazy").setup({
     -- Highlight todo, notes, etc in comments
     {
         "folke/todo-comments.nvim",
-        event = "VimEnter",
+        event = "InsertEnter",
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = { signs = false },
     },
 
     { -- Collection of various small independent plugins/modules
         "echasnovski/mini.nvim",
+        version = false,
+        event = "InsertEnter",
         config = function()
+
             -- Better Around/Inside textobjects
-            --
-            -- Examples:
             --  - va)  - [V]isually select [A]round [)]paren
             --  - yinq - [Y]ank [I]nside [N]ext [']quote
             --  - ci'  - [C]hange [I]nside [']quote
             require("mini.ai").setup({ n_lines = 500 })
 
             -- Add/delete/replace surroundings (brackets, quotes, etc.)
-            --
             -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
             -- - sd'   - [S]urround [D]elete [']quotes
             -- - sr)'  - [S]urround [R]eplace [)] [']
             require("mini.surround").setup()
-
             require("mini.diff").setup()
 
+            local miniclue = require('mini.clue')
+            local function set(mode, keys) return { mode = mode, keys = keys } end
+            miniclue.setup{
+                triggers = {
+                    set('n', '<Leader>'),
+                    set('x', '<Leader>'),
+                    set('i', '<C-x>'),
+                    set('n', 'g'),
+                    set('x', 'g'),
+                    set('n', '\\'),
+                    set('n', "'"),
+                    set('n', '`'),
+                    set('x', "'"),
+                    set('x', '`'),
+                    set('n', '"'),
+                    set('x', '"'),
+                    set('i', '<C-r>'),
+                    set('c', '<C-r>'),
+                    set('n', '<C-w>'),
+                    set('n', 's'),
+                    set('n', 'z'),
+                    set('x', 'z'),
+                },
+
+                clues = {
+                    -- Enhance this by adding descriptions for <Leader> mapping groups
+                    miniclue.gen_clues.builtin_completion(),
+                    miniclue.gen_clues.g(),
+                    miniclue.gen_clues.marks(),
+                    miniclue.gen_clues.registers( { show_contents = true } ),
+                    miniclue.gen_clues.windows(),
+                    miniclue.gen_clues.z(),
+                },
+                window = {
+                    delay = 300,
+                    config = { width = 100 },
+                }
+            }
+
+            require("mini.move").setup{
+                mappings = {
+                    left = '<leader>h',
+                    right = '<leader>l',
+                    up = '<leader>k',
+                    down = '<leader>j',
+                    line_left = '<leader>h',
+                    line_right = '<leader>l',
+                    line_down = '<leader>j',
+                    line_up = '<leader>k',
+                }
+            }
+            require('mini.cursorword').setup{delay=50}
+            require('mini.pairs').setup()
+            require('mini.splitjoin').setup()
         end,
     },
     -- show the function that you are in on top on the code
-    { 'nvim-treesitter/nvim-treesitter-context', event = "VeryLazy" },
+    { 'nvim-treesitter/nvim-treesitter-context', event = "InsertEnter", },
     {
         -- undo
         "mbbill/undotree",
-        event = "VeryLazy",
+        event = "InsertEnter",
         config = function()
             vim.g.undotree_WindowLayout = 2
             vim.g.undotree_SplitWidth = 50
@@ -450,29 +433,10 @@ require("lazy").setup({
         end,
     },
     {
-        'windwp/nvim-autopairs',
-        event = "InsertEnter",
-        opts = {
-            ignored_next_char = "[%w%.]",
-            enable_check_bracket_line = false,
-            fast_wrap = {
-                map = '<a-e>',
-                chars = { '{', '[', '(', '"', "'" },
-                pattern = [=[[%'%"%>%]%)%}%,]]=],
-                end_key = '$',
-                keys = 'qwertyuiopzxcvbnmasdfghjkl',
-                check_comma = true,
-                manual_position = true,
-                highlight = 'Search',
-                highlight_grey = 'Comment'
-            },
-        }
-    },
-    {
         "brenton-leighton/multiple-cursors.nvim",
         opts = {},
         version = "*",
-        event = "VeryLazy",
+        event = "InsertEnter",
         keys = {
             -- {"<C-Down>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "i"}},
             -- {"<C-Up>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "i"}},
@@ -482,10 +446,13 @@ require("lazy").setup({
             {"<leader>d", "<Cmd>MultipleCursorsAddToWordUnderCursor<CR>", mode = {"n", "v"}},
         },
     },
-    { "mg979/vim-visual-multi" },
+    {
+        "mg979/vim-visual-multi",
+        event = "InsertEnter",
+    },
     {
         "nvim-neo-tree/neo-tree.nvim",
-        event = "VeryLazy",
+        event = "InsertEnter",
         branch = "v3.x",
 
         dependencies = {
@@ -570,7 +537,6 @@ require("lazy").setup({
 
         config = function(_, opts)
             -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-
             -- Prefer git instead of curl in order to improve connectivity in some environments
             require("nvim-treesitter.install").prefer_git = true
             ---@diagnostic disable-next-line: missing-fields
@@ -583,46 +549,12 @@ require("lazy").setup({
         config = function()
             require('session_manager').setup {
                 sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
-                autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
+                -- autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
+                autoload_mode = require('session_manager.config').AutoloadMode.Disabled,
             }
         end,
     },
-    { -- extended increment/decrement
-        "monaqa/dial.nvim",
-        event = "VeryLazy",
-        config = function()
-            local augend = require("dial.augend")
-            require("dial.config").augends:register_group{
-                default = {
-                    augend.integer.alias.decimal_int,
-                    augend.integer.alias.hex,
-                    augend.constant.alias.bool,
-                    augend.integer.alias.octal,
-                    augend.integer.alias.binary,
-                    augend.date.new {
-                        pattern = "%Y/%m/%d",
-                        default_kind = "day",
-                    },
-                },
-            }
-
-            local map = require("dial.map")
-            vim.keymap.set("n", "<C-a>", function() map.manipulate("increment", "normal") end)
-            vim.keymap.set("n", "<C-x>", function() map.manipulate("decrement", "normal") end)
-        end,
-    },
-    -- { -- session manager
-    --     "Shatur/neovim-session-manager",
-    --     priority = 1000,
-    --     config = function()
-    --         require('session_manager').setup {
-    --             sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
-    --             autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir,
-    --         }
-    --     end,
-    -- },
-    -- debugger
-    {
+    { -- debugger
         'mfussenegger/nvim-dap',
         lazy = true,
     },
@@ -631,22 +563,22 @@ require("lazy").setup({
         lazy = true,
         dependencies = { "mfussenegger/nvim-dap" }
     },
-    {
-        "Exafunction/codeium.vim",
-        event = 'BufEnter',
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "hrsh7th/nvim-cmp",
-        },
-        config = function ()
-            vim.g.codeium_disable_bindings = 1
-            vim.g.codeium_no_map_tab = 1
-
-            vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-            vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
-            vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
-        end,
-    },
+    -- {
+    --     "Exafunction/codeium.vim",
+    --     event = "InsertEnter",
+    --     dependencies = {
+    --         "nvim-lua/plenary.nvim",
+    --         "hrsh7th/nvim-cmp",
+    --     },
+    --     config = function ()
+    --         vim.g.codeium_disable_bindings = 1
+    --         vim.g.codeium_no_map_tab = 1
+    --
+    --         vim.keymap.set('i', '<C-tab>', function() return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+    --         vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+    --         vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+    --     end,
+    -- },
 }, { ui = { border = "rounded" } })
 
 -- Rounded border for hover and signature
@@ -659,10 +591,9 @@ local function set_opts(desc, silent)
 end
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+-- vim.keymap.set("n", "[d", vim.diagnostic.jump, { desc = "Go to previous Diagnostic message" })
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic Error messages" })
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic Quickfix list" })
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
@@ -693,7 +624,7 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line")) -- go to the first word on the line
-vim.keymap.set({ 'n', 't' }, '<leader>t', "<cmd>ToggleTerm<CR>", set_opts("Toggle terminal"))
+vim.keymap.set({ 'n' }, '<leader>t', "<cmd>ToggleTerm<CR>", set_opts("Toggle terminal"))
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', set_opts('Exit terminal mode'))
 
 vim.keymap.set("n", "<A-o>", ":ClangdSwitchSourceHeader<CR>", set_opts("switch between header and source"))
@@ -703,15 +634,17 @@ vim.keymap.set("n", "<leader>dt", ":lua MiniDiff.toggle_overlay()<CR>", set_opts
 vim.keymap.set("n", "<leader>ct", ":Codeium Toggle<CR>", set_opts("Toggle codeium", true))
 
 vim.keymap.set("i", "<C-e>", function() vim.lsp.buf.signature_help() end, set_opts("Signature help", true))
+vim.keymap.set({'n', 'i'}, "J", function() vim.lsp.buf.signature_help() end, set_opts("Signature help", true))
 
 vim.keymap.set("n", "Ç", ":", set_opts())
-vim.keymap.set({"n", "t"}, "<leader>cc", '<Esc> <C-\\><C-n>:q!<CR>', set_opts())
 
 vim.keymap.set("v", "<", '<gv', { silent = true })
 vim.keymap.set("v", ">", '>gv', { silent = true })
 
-vim.keymap.set("n", "<leader>st", ':TodoTelescope<CR>', { silent = true })
+vim.keymap.set("n", "<leader>st", ':TodoTelescope<CR>', set_opts("Show to-do list", true))
 
+vim.keymap.set("n", "zh", function() vim.cmd("bn") end, set_opts("Next buffer", true))
+vim.keymap.set("n", "zl", function() vim.cmd("bp") end, set_opts("Previous buffer", true))
 
 -- close ToggleTerm if is open
 vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
@@ -732,7 +665,7 @@ function Build(cmd)
 end
 
 local toggle_maximize = false
-vim.keymap.set("n", "<leader>tf", function()
+vim.keymap.set("n", "<leader>ft", function()
     if toggle_maximize then
         vim.cmd("wincmd =")
     else
@@ -768,15 +701,30 @@ local function hide_bar()
 end
 
 vim.loop.new_timer():start(100, 0, vim.schedule_wrap(function()
-    hide_bar()
     vim.opt.formatoptions:remove{"c", "r", "o"}
+
+    -- enter in insert mode and exit to trigger the event InsertEnter
+    local keys = vim.api.nvim_replace_termcodes("<Esc>i<Esc>", true, false, true)
+    vim.api.nvim_feedkeys(keys, "n", true)
+
 end))
 
-vim.keymap.set('n', '<leader>bh', hide_bar, set_opts("Toggle bottom bars"))
+vim.keymap.set('n', '<leader>bb', hide_bar, set_opts("Toggle bottom bars"))
 
 local toggle_whitespace = vim.opt.list
 
-vim.keymap.set("n", "<leader>h", function()
+vim.keymap.set("n", "<leader>bh", function()
     toggle_whitespace = not toggle_whitespace
     vim.opt.list = toggle_whitespace
 end, set_opts("Toggle whitespace characters"))
+
+vim.cmd('hi! link CurSearch Search')
+
+vim.loop.new_timer():start(150, 0, vim.schedule_wrap(function()
+    if #vim.fn.argv() == 0 then
+        vim.cmd('SessionManager load_session')
+        vim.loop.new_timer():start(5000, 0, vim.schedule_wrap(hide_bar))
+    else
+        hide_bar()
+    end
+end))

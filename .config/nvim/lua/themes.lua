@@ -262,11 +262,12 @@ M.bamboo = {
         local bamboo = require('bamboo')
         bamboo.setup{
             style = 'multiplex',
+            -- style = 'vulgaris',
             -- transparent = true,
             colors = {
                 -- blue = "#76abae",
                 blue = "#cbcd61",
-                bg0 = "#242522",
+                bg0 = "#2d2f2d",
             },
 
             highlights = {
@@ -324,6 +325,74 @@ M.nordic = {
     priority = 1000,
     config = function()
         require('nordic').load()
+    end
+}
+
+M.mellow = {
+    'mellow-theme/mellow.nvim',
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme mellow]])
+    end
+}
+
+M.no_clown_fiesta = {
+    'aktersnurra/no-clown-fiesta.nvim',
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme no-clown-fiesta]])
+    end
+}
+
+M.modus = {
+    'miikanissi/modus-themes.nvim',
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme modus]])
+    end
+}
+
+M.sequoia = {
+    'Hiroya-W/sequoia-moonlight.nvim',
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme sequoia]])
+    end
+}
+
+M.citruszest = {
+    "zootedb0t/citruszest.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme citruszest]])
+    end
+}
+M.hybrid = {
+    "HoNamDuong/hybrid.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    config = function()
+        vim.cmd([[colorscheme hybrid]])
+    end
+}
+
+M.aquarium = {
+    'frenzyexists/aquarium-vim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme aquarium]])
+    end
+}
+
+M.komau = {
+    'ntk148v/komau.vim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme komau]])
     end
 }
 
