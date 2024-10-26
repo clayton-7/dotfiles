@@ -279,6 +279,7 @@ M.bamboo = {
         -- search cursor highlights
         vim.cmd("highlight Search guifg=#ffffff guibg=#307050")
         vim.cmd("highlight CurSearch guifg=#121212 guibg=#00ff60")
+        vim.cmd("highlight Visual guibg=#505050")
     end,
 }
 M.tokyonight = {
@@ -393,6 +394,51 @@ M.komau = {
     priority = 1000,
     config = function()
         vim.cmd([[colorscheme komau]])
+    end
+}
+
+M.darcula_solid1 = {
+    'briones-gabriel/darcula-solid.nvim',
+    dependencies = { "rktjmp/lush.nvim" },
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme darcula-solid]])
+        vim.cmd([[set termguicolors]])
+    end
+}
+
+M.zenburn = {
+    "phha/zenburn.nvim",
+    config = function ()
+        vim.cmd([[colorscheme zenburn]])
+    end
+}
+
+M.monotone = {
+    -- "huyvohcmc/atlas.vim",
+    -- "pbrisbin/vim-colors-off",
+    -- "jaredgorski/fogbell.vim",
+    -- "Lokaltog/vim-monotone",
+    -- "https://bitbucket.org/kisom/eink.vim",
+    -- "fxn/vim-monochrome",
+    "ryanpcmcquen/true-monochrome_vim", -- bom
+    -- "vim-scripts/true-monochrome",
+    -- "kdheepak/monochrome.nvim",
+    -- "zenbones-theme/zenbones.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
+
+    config = function ()
+        -- vim.cmd([[colorscheme atlas]])
+        -- vim.cmd([[colorscheme off]])
+        -- vim.cmd([[colorscheme fogbell]])
+        -- vim.cmd([[colorscheme monotone]])
+        -- vim.cmd([[colorscheme eink]])
+        -- vim.cmd([[colorscheme monochrome]])
+        vim.cmd([[colorscheme true-monochrome]]) -- bom
+
+        -- vim.cmd([[colorscheme monochrome]])
+        -- vim.cmd([[colorscheme zenwritten]])
     end
 }
 

@@ -43,6 +43,9 @@ right = ["spinner", "position", "file-type"]
 "0" = "goto_line_start"
 "g" = { c = "toggle_comments" }
 "G" = "goto_last_line"
+"d" = { d = ["extend_to_line_bounds", "delete_selection"] }
+"C-c" = ["extend_line_below", "select_mode", ":clipboard-yank-join"]
+"C-S-v" = ":clipboard-paste-after"
 
 [keys.insert]
 "C-space" = "completion"

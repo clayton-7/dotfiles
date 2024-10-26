@@ -49,13 +49,11 @@ unsetopt BEEP # disable terminal beep
 # source ~/.config/.zsh/nicoulaj.zsh-theme
 source ~/.config/.zsh/common.zsh-theme
 source ~/.config/.zsh/config.zsh
-source ~/.config/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.config/.zsh/vi-mode.zsh
 source ~/.config/.zsh/timer.zsh
 source ~/.config/.zsh/zsh-history-substring-search.zsh
-
-source ~/dev/vulkan*/setup-env.sh
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'

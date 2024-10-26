@@ -1,7 +1,8 @@
 vim.keymap.set({"n"}, "<leader>5", function()
-    Build("clear && odin run src -debug")
+    Build("clear && ./build.sh -debug")
 end, { desc = "build" })
 
 vim.keymap.set({"n"}, "<leader>6", function()
-    Build("clear && odin run src")
+    Build("clear && ./build.sh")
+    -- Build("clear && odin run src")
 end, { desc = "build" })
