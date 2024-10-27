@@ -63,11 +63,11 @@ require("lazy").setup({
         event = "InsertEnter",
         config = true,
     },
-    { -- terminal
-        'akinsho/toggleterm.nvim',
-        event = "InsertEnter",
-        config = true,
-    },
+    -- { -- terminal
+    --     'akinsho/toggleterm.nvim',
+    --     event = "InsertEnter",
+    --     config = true,
+    -- },
     { -- Fuzzy Finder (files, lsp, etc)
         "nvim-telescope/telescope.nvim",
         event = "InsertEnter",
@@ -251,6 +251,7 @@ require("lazy").setup({
         opts = { custom_key_maps = { { "n", "<Leader>|", function() require("multiple-cursors").align() end } } },
         keys = {
             { "<C-n>", "<Cmd>MultipleCursorsAddJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Add cursors to the word under the cursor" },
+            { "<C-S-n>", "<Cmd>MultipleCursorsJumpNextMatch<CR>", mode = {"n", "x"}, desc = "Skip current cursor and jump to next word"},
             { "<C-S-k>", "<Cmd>MultipleCursorsAddUp<CR>", mode = {"n", "x"}, desc = "Add cursor and move up" },
             { "<C-S-j>", "<Cmd>MultipleCursorsAddDown<CR>", mode = {"n", "x"}, desc = "Add cursor and move down" },
         },
@@ -440,14 +441,15 @@ vim.keymap.set("n", "<C-b>", ':Neotree toggle right filesystem reveal<CR>', set_
 -- buffers
 vim.keymap.set("n", "<c-tab>", function() vim.cmd("bn") end, set_opts("Next buffer", true))
 vim.keymap.set("n", "<c-s-tab>", function() vim.cmd("bp") end, set_opts("Previous buffer"))
-vim.keymap.set("n", "<C-q>", ":bn<CR>:bd #<CR>", set_opts("Close current buffer")) -- close buffer
+vim.keymap.set("n", "<C-q>", ":bd!<CR>", set_opts("Close current buffer"))
+vim.keymap.set("t", "<C-q>", "exit<CR><CR>", set_opts("Close current terminal buffer"))
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line")) -- go to the first word on the line
-vim.keymap.set({ 'n' }, '<leader>t', "<cmd>ToggleTerm<CR>", set_opts("Toggle terminal"))
+vim.keymap.set({ 'n' }, '<leader>t', ":terminal<CR>", set_opts("Toggle terminal"))
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', set_opts('Exit terminal mode'))
 
 vim.keymap.set("n", "<A-o>", ":ClangdSwitchSourceHeader<CR>", set_opts("switch between header and source"))
@@ -555,22 +557,29 @@ vim.keymap.set("n", "<leader>bh", function()
     vim.opt.list = toggle_whitespace
 end, set_opts("Toggle whitespace characters"))
 
--- close ToggleTerm if is open
-vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
-    if vim.fn.mode() == "t" or vim.fn.mode() == "i" then vim.cmd('ToggleTerm') end
-end))
+vim.api.nvim_create_augroup("terminal_insert_mode", { clear = true })
+vim.api.nvim_create_autocmd("TermOpen", {
+    group = "terminal_insert_mode",
+    command = "startinsert"
+})
+
+local function open_terminal(silent)
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal' then
+            vim.cmd('tabnext | buffer ' .. buf)
+            return
+        end
+    end
+
+    vim.cmd('tabnew | terminal')
+end
+
+vim.keymap.set('n', '<leader>t', open_terminal, set_opts("open terminal"))
 
 function Build(cmd)
-    vim.cmd('TermExec cmd="clear"')
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('6<C-w>j', true, false, true), 'n', true)
-
-    vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
-        vim.api.nvim_buf_delete(0, { force = true })
-
-        vim.loop.new_timer():start(50, 0, vim.schedule_wrap(function()
-            vim.cmd('TermExec cmd="' .. cmd .. '"')
-        end))
-    end))
+    open_terminal()
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(cmd .. "<CR>", true, false, true), 'n', true)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), 'n', true)
 end
 
 local toggle_maximize = false
