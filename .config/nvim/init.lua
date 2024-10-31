@@ -12,7 +12,6 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.updatetime = 200
 vim.opt.timeoutlen = 250
-vim.opt.cmdheight = 0
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
@@ -63,11 +62,6 @@ require("lazy").setup({
         event = "InsertEnter",
         config = true,
     },
-    -- { -- terminal
-    --     'akinsho/toggleterm.nvim',
-    --     event = "InsertEnter",
-    --     config = true,
-    -- },
     { -- Fuzzy Finder (files, lsp, etc)
         "nvim-telescope/telescope.nvim",
         event = "InsertEnter",
@@ -415,7 +409,6 @@ local function set_opts(desc, silent)
 end
 
 -- Diagnostic keymaps
--- vim.keymap.set("n", "[d", vim.diagnostic.jump, { desc = "Go to previous Diagnostic message" })
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic Error messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic Quickfix list" })
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -473,6 +466,8 @@ vim.keymap.set("n", "zl", function() vim.cmd("bp") end, set_opts("Previous buffe
 
 vim.keymap.set("n", "<Leader>sp", ':SessionManager load_session<CR>', set_opts("Open projects", true))
 vim.keymap.set("n", "<CR>", ':w<CR>', set_opts("Save current buffer", false))
+
+vim.keymap.set({ 'n', 'i', 'v','t' }, '<F1>', "<Esc>", set_opts())
 
 function cmp_keybinds(cmp, luasnip)
     return {
@@ -557,17 +552,11 @@ vim.keymap.set("n", "<leader>bh", function()
     vim.opt.list = toggle_whitespace
 end, set_opts("Toggle whitespace characters"))
 
-vim.api.nvim_create_augroup("terminal_insert_mode", { clear = true })
-vim.api.nvim_create_autocmd("TermOpen", {
-    group = "terminal_insert_mode",
-    command = "startinsert"
-})
-
 local function open_terminal(silent)
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal' then
-            vim.cmd('tabnext | buffer ' .. buf)
-            return
+            vim.cmd('bd!' .. buf)
+            break
         end
     end
 
@@ -575,6 +564,35 @@ local function open_terminal(silent)
 end
 
 vim.keymap.set('n', '<leader>t', open_terminal, set_opts("open terminal"))
+
+function tab_line()
+    local tabline = ''
+    local cwd = vim.fn.getcwd()
+    local current_tab = vim.fn.tabpagenr()
+
+    for i = 1, vim.fn.tabpagenr('$') do
+        local bufnr = vim.fn.tabpagebuflist(i)[1]
+        local name = vim.fn.bufname(bufnr)
+
+        if name ~= '' then
+            if vim.fn.getbufvar(bufnr, "&buftype") == "terminal" then
+                name = 'Terminal'
+            else
+                name = name:gsub(cwd .. '/', '')
+            end
+
+            if i == current_tab then
+                tabline = tabline .. '%' .. i .. 'T' .. ' ▶ ' .. name .. ' ◀ '
+            else
+                tabline = tabline .. '%' .. i .. 'T' .. name .. ' '
+            end
+        end
+    end
+
+    return tabline
+end
+
+vim.o.tabline = '%!v:lua.tab_line()'
 
 function Build(cmd)
     open_terminal()
@@ -597,7 +615,6 @@ vim.keymap.set("n", "<leader>ft", function()
     toggle_maximize = not toggle_maximize
 end, { desc = "Toggle maximize window" })
 
-vim.keymap.set({ 'n', 'i', 'v','t' }, '<F1>', "<Esc>", set_opts())
 local hide_bottom_bar = false
 
 local function hide_bar()
@@ -626,6 +643,19 @@ end
 
 vim.keymap.set("n", "<leader>n", toggle_line_number, set_opts("Toggle line numbers", true))
 vim.keymap.set('n', '<leader>bb', hide_bar, set_opts("Toggle bottom bars"))
+
+local config_group = vim.api.nvim_create_augroup('on_load_session', {})
+vim.api.nvim_create_autocmd({ 'User' }, {
+    pattern = "SessionLoadPost",
+    group = config_group,
+    callback = hide_bar,
+})
+
+vim.api.nvim_create_augroup("terminal_insert_mode", { clear = true })
+vim.api.nvim_create_autocmd("TermOpen", {
+    group = "terminal_insert_mode",
+    command = "startinsert"
+})
 
 vim.loop.new_timer():start(100, 0, vim.schedule_wrap(function()
     vim.opt.formatoptions:remove{"c", "r", "o"}
