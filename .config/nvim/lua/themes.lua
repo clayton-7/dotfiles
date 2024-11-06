@@ -416,29 +416,10 @@ M.zenburn = {
 }
 
 M.monotone = {
-    -- "huyvohcmc/atlas.vim",
-    -- "pbrisbin/vim-colors-off",
-    -- "jaredgorski/fogbell.vim",
-    -- "Lokaltog/vim-monotone",
-    -- "https://bitbucket.org/kisom/eink.vim",
-    -- "fxn/vim-monochrome",
-    "ryanpcmcquen/true-monochrome_vim", -- bom
-    -- "vim-scripts/true-monochrome",
-    -- "kdheepak/monochrome.nvim",
-    -- "zenbones-theme/zenbones.nvim",
-    dependencies = { "rktjmp/lush.nvim" },
+    "davidosomething/vim-colors-meh", --
 
     config = function ()
-        -- vim.cmd([[colorscheme atlas]])
-        -- vim.cmd([[colorscheme off]])
-        -- vim.cmd([[colorscheme fogbell]])
-        -- vim.cmd([[colorscheme monotone]])
-        -- vim.cmd([[colorscheme eink]])
-        -- vim.cmd([[colorscheme monochrome]])
-        vim.cmd([[colorscheme true-monochrome]]) -- bom
-
-        -- vim.cmd([[colorscheme monochrome]])
-        -- vim.cmd([[colorscheme zenwritten]])
+        vim.cmd([[colorscheme meh]]) --
     end
 }
 

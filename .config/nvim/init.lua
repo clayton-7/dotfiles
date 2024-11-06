@@ -1,6 +1,12 @@
-vim.cmd("syntax off")
+vim.cmd("colorscheme habamax")
+
+vim.cmd("highlight WinSeparator guifg=none")
+vim.cmd("highlight Comment guifg=#606060")
 vim.cmd("highlight Normal guifg=#AAAAAA guibg=none")
 vim.cmd("highlight StatusLine guifg=#FFFFFF guibg=#202020")
+vim.cmd("highlight StatusLineNC guifg=#606060 guibg=#202020")
+vim.cmd("highlight TabLine guifg=#FFFFFF guibg=#202020")
+vim.cmd("highlight TabLineFill guifg=#FFFFFF guibg=#202020")
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -80,7 +86,7 @@ require("lazy").setup({
             local actions = require("telescope.actions")
             require("telescope").setup({
                 extensions = {
-                    ["ui-select"] = { require("telescope.themes").get_dropdown() },
+                    ["ui-select"] = { require("telescope.themes").get_ivy() },
                 },
                 defaults = {
                     mappings = { i = { ["<Esc>"] = actions.close } },
@@ -221,8 +227,8 @@ require("lazy").setup({
                     line_up = '<leader>k',
                 }
             }
-            require('mini.cursorword').setup{delay=50}
-            -- require('mini.pairs').setup()
+            require('mini.cursorword').setup{ delay = 50 }
+            require('mini.pairs').setup()
             require('mini.splitjoin').setup()
         end,
     },
@@ -349,15 +355,23 @@ require("lazy").setup({
         dependencies = { "mfussenegger/nvim-dap" }
     },
 
+    { -- Highlight todo, notes, etc in comments
+        "folke/todo-comments.nvim",
+        event = "InsertEnter",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
+            highlight = {
+                before = "fg",
+                keyword = "wide_fg",
+                comments_only = false,
+            },
+            signs = false,
+        },
+    },
+
     -- require("themes").bamboo,
     -- require("themes").monotone,
 
-    -- { -- Highlight todo, notes, etc in comments
-    --     "folke/todo-comments.nvim",
-    --     event = "InsertEnter",
-    --     dependencies = { "nvim-lua/plenary.nvim" },
-    --     opts = { signs = false },
-    -- },
     -- { 'nvim-treesitter/nvim-treesitter-context', event = "InsertEnter" },
     -- { -- Highlight, edit, and navigate code
     --     "nvim-treesitter/nvim-treesitter",
