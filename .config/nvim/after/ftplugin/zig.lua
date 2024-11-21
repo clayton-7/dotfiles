@@ -1,12 +1,6 @@
 vim.keymap.set("n", "<leader>5", function()
-    vim.cmd('TermExec cmd="clear && zig build run"')
+    Build('clear && zig build run')
 end, { desc = "build and run" })
-
-vim.keymap.set("n", "<leader>6", function()
-    vim.cmd('TermExec cmd="clear && zig build run"')
-    vim.cmd("ToggleTerm")
-
-end, { desc = "build and run without terminal" })
 
 local ls = require('luasnip')
 local s = ls.snippet

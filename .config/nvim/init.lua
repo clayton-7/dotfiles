@@ -7,8 +7,9 @@ vim.cmd("highlight StatusLine guifg=#FFFFFF guibg=#202020")
 vim.cmd("highlight StatusLineNC guifg=#606060 guibg=#202020")
 vim.cmd("highlight TabLine guifg=#FFFFFF guibg=#202020")
 vim.cmd("highlight TabLineFill guifg=#FFFFFF guibg=#202020")
-vim.cmd("highlight Search guifg=#000000 guibg=#FFFFFF")
-vim.cmd("highlight CurSearch guifg=#000000 guibg=#00FF00")
+vim.cmd("highlight Search guifg=#000000 guibg=#777777")
+vim.cmd("highlight CurSearch guifg=#000000 guibg=#00FACC")
+vim.cmd("highlight @markup.raw guifg=#CCCCCC guibg=none")
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -232,6 +233,7 @@ require("lazy").setup({
             require('mini.cursorword').setup{ delay = 50 }
             -- require('mini.pairs').setup()
             require('mini.splitjoin').setup()
+            require('mini.comment').setup()
         end,
     },
     { -- undo
