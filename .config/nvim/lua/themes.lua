@@ -423,6 +423,21 @@ M.monotone = {
     end
 }
 
+M.habamax = function()
+    vim.cmd("colorscheme habamax")
+
+    vim.cmd("highlight WinSeparator guifg=none")
+    vim.cmd("highlight Comment guifg=#606060")
+    vim.cmd("highlight Normal guifg=#AAAAAA guibg=none")
+    vim.cmd("highlight StatusLine guifg=#FFFFFF guibg=#202020")
+    vim.cmd("highlight StatusLineNC guifg=#606060 guibg=#202020")
+    vim.cmd("highlight TabLine guifg=#FFFFFF guibg=#202020")
+    vim.cmd("highlight TabLineFill guifg=#FFFFFF guibg=#202020")
+    vim.cmd("highlight Search guifg=#000000 guibg=#777777")
+    vim.cmd("highlight CurSearch guifg=#000000 guibg=#00FACC")
+    vim.cmd("highlight @markup.raw guifg=#CCCCCC guibg=none")
+end
+
 M.nord = {
     "gbprod/nord.nvim",
     lazy = false,
@@ -430,6 +445,11 @@ M.nord = {
     config = function()
         require("nord").setup{}
         vim.cmd.colorscheme("nord")
+
+        vim.cmd("highlight StatusLine guifg=#ffffff")
+        vim.cmd("highlight StatusLineNC guifg=#bbbbbb")
+        vim.cmd("highlight TabLineSel guifg=#ffffff guibg=#2d333f")
+        vim.cmd("highlight TabLine guifg=#bbbbbb guibg=#4c566a")
     end,
 }
 

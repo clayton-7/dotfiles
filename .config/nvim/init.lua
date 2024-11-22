@@ -1,15 +1,4 @@
-vim.cmd("colorscheme habamax")
-
-vim.cmd("highlight WinSeparator guifg=none")
-vim.cmd("highlight Comment guifg=#606060")
-vim.cmd("highlight Normal guifg=#AAAAAA guibg=none")
-vim.cmd("highlight StatusLine guifg=#FFFFFF guibg=#202020")
-vim.cmd("highlight StatusLineNC guifg=#606060 guibg=#202020")
-vim.cmd("highlight TabLine guifg=#FFFFFF guibg=#202020")
-vim.cmd("highlight TabLineFill guifg=#FFFFFF guibg=#202020")
-vim.cmd("highlight Search guifg=#000000 guibg=#777777")
-vim.cmd("highlight CurSearch guifg=#000000 guibg=#00FACC")
-vim.cmd("highlight @markup.raw guifg=#CCCCCC guibg=none")
+-- require("themes").habamax()
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -571,7 +560,7 @@ vim.keymap.set("n", "<leader>bh", function()
     vim.opt.list = toggle_whitespace
 end, set_opts("Toggle whitespace characters"))
 
-local function open_terminal(silent)
+local function open_terminal()
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal' then
             vim.cmd('bd!' .. buf)
@@ -585,33 +574,37 @@ end
 vim.keymap.set('n', '<leader>t', open_terminal, set_opts("open terminal"))
 
 function tab_line()
-    local tabline = ''
-    local cwd = vim.fn.getcwd()
-    local current_tab = vim.fn.tabpagenr()
+    local tabline = ""
 
-    for i = 1, vim.fn.tabpagenr('$') do
-        local bufnr = vim.fn.tabpagebuflist(i)[1]
-        local name = vim.fn.bufname(bufnr)
-
-        if name ~= '' then
-            if vim.fn.getbufvar(bufnr, "&buftype") == "terminal" then
-                name = 'Terminal'
-            else
-                name = name:gsub(cwd .. '/', '')
-            end
-
-            if i == current_tab then
-                tabline = tabline .. '%' .. i .. 'T' .. ' ▶ ' .. name .. ' ◀ '
-            else
-                tabline = tabline .. '%' .. i .. 'T' .. name .. ' '
-            end
+    for i = 1, vim.fn.tabpagenr("$") do
+        -- Select the highlighting
+        if i == vim.fn.tabpagenr() then
+            tabline = tabline .. "%#TabLineSel#"
+        else
+            tabline = tabline .. "%#TabLine#"
         end
+
+        tabline = tabline.."%"..(i).."T"
+
+        local buflist = vim.fn.tabpagebuflist(i)
+        local winnr = vim.fn.tabpagewinnr(i)
+        local tab_name = vim.fn.bufname(buflist[winnr])
+
+        -- format terminal name
+        if vim.fn.getbufvar(buflist[1], "&buftype") == "terminal" then
+            tab_name = tab_name:match("([^:]+)$")
+        end
+
+        tabline = tabline.." ".. i .." - ".. tab_name.." "
     end
+
+    tabline = tabline .. "%#TabLineFill#%T"
+    tabline = tabline .. "%=%#TabLine#%999X|close|"
 
     return tabline
 end
 
-vim.o.tabline = '%!v:lua.tab_line()'
+vim.opt.tabline = "%!v:lua.tab_line()"
 
 function Build(cmd)
     open_terminal()
