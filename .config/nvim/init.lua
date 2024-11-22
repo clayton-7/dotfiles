@@ -373,6 +373,7 @@ require("lazy").setup({
         },
     },
 
+    require("themes").nord,
     -- require("themes").bamboo,
     -- require("themes").monotone,
 
