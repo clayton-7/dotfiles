@@ -450,6 +450,8 @@ M.nord = {
         vim.cmd("highlight StatusLineNC guifg=#bbbbbb")
         vim.cmd("highlight TabLineSel guifg=#ffffff guibg=#2d333f")
         vim.cmd("highlight TabLine guifg=#bbbbbb guibg=#4c566a")
+        vim.cmd("highlight Search guifg=#4c566a guibg=#FFFFFF")
+        vim.cmd("highlight IncSearch guifg=#000000 guibg=#FFFFFF")
     end,
 }
 
