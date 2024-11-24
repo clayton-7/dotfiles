@@ -443,7 +443,9 @@ M.nord = {
     lazy = false,
     priority = 1000,
     config = function()
-        require("nord").setup{}
+        require("nord").setup{
+            diff = { mode = "fg" },
+        }
         vim.cmd.colorscheme("nord")
 
         vim.cmd("highlight StatusLine guifg=#ffffff")

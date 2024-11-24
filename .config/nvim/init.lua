@@ -450,7 +450,6 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line")) -- go to the first word on the line
-vim.keymap.set({ 'n' }, '<leader>t', ":terminal<CR>", set_opts("Toggle terminal"))
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', set_opts('Exit terminal mode'))
 
 vim.keymap.set("n", "<A-o>", ":ClangdSwitchSourceHeader<CR>", set_opts("switch between header and source"))
@@ -609,7 +608,6 @@ vim.opt.tabline = "%!v:lua.tab_line()"
 function Build(cmd)
     open_terminal()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(cmd .. "<CR>", true, false, true), 'n', true)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), 'n', true)
 end
 
 local toggle_maximize = false
