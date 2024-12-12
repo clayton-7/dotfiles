@@ -438,6 +438,15 @@ M.habamax = function()
     vim.cmd("highlight @markup.raw guifg=#CCCCCC guibg=none")
 end
 
+M.simple_dark = {
+    "tek256/simple-dark",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme simple-dark]])
+    end
+}
+
 M.nord = {
     "gbprod/nord.nvim",
     lazy = false,
