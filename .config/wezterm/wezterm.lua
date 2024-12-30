@@ -9,12 +9,12 @@ c.line_height = 0.9
 c.hide_tab_bar_if_only_one_tab = true
 c.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 
-c.window_background_opacity = 0.90
+c.window_background_opacity = 0.87
 c.enable_scroll_bar = true
 
 c.colors = {
-  foreground = "silver",
-  background = "#000000",
+  foreground = "#FFFFFF",
+  background = "#101012",
 
   cursor_bg = "#00FF33",
   cursor_fg = "black",
@@ -42,6 +42,17 @@ c.keys = {
     mods = "CTRL|SHIFT",
     action = wezterm.action.SendKey { key = "k", mods = 'CTRL|SHIFT' },
   },
+  {
+    key = "c",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.SendKey { key = "c", mods = 'CTRL|SHIFT' },
+  },
+  {
+    key = "v",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.SendKey { key = "v", mods = 'CTRL|SHIFT' },
+  },
+
 }
 
 

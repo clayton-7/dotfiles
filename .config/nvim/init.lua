@@ -12,7 +12,8 @@ vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.guicursor = "n-v-c-i:block"
-vim.opt.scrolloff = 999
+-- vim.opt.scrolloff = 999
+-- vim.opt.scrolloff = 20
 vim.opt.hlsearch = true
 
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -117,6 +118,8 @@ require("lazy").setup({
         config = function()
             require('mini.cursorword').setup{ delay = 50 }
             require('mini.splitjoin').setup()
+            require('mini.comment').setup{  mappings = { comment_line = 'gc' } }
+
         end,
     },
     { -- set tab space for different languages
@@ -222,7 +225,8 @@ require("lazy").setup({
     },
 
     -- require("themes").simple_dark,
-    require("themes").nord,
+    -- require("themes").nord,
+    require("themes").fogbell,
     -- require("themes").bamboo,
     -- require("themes").monotone,
 
@@ -246,11 +250,28 @@ vim.keymap.set("v", "y", 'ygv', { silent = true })
 vim.keymap.set("c", "w\\", 'w', { silent = true })
 
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
+
+vim.keymap.set('n', 'j', function()
+    if vim.fn.line('.') == vim.fn.line('w$') then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-f>", true, false, true), 'n', true)
+    else
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("j", true, false, true), 'n', true)
+        -- vim.cmd("execute 'normal! j'")
+    end
+
+end, { noremap = true, silent = true })
+
+vim.keymap.set('n', 'k', function()
+    if vim.fn.line('.') == vim.fn.line('w0') then
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-b>", true, false, true), 'n', true)
+    else
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("k", true, false, true), 'n', true)
+    end
+
+end, { noremap = true, silent = true })
+
 vim.keymap.set("n", "<C-b>", ':Neotree toggle right filesystem reveal<CR>', set_opts("File browser")) -- File browser
 
--- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line"))
 
@@ -325,6 +346,13 @@ local function open_terminal(new_terminal)
 end
 
 vim.keymap.set('n', '<leader>t', function() open_terminal(true) end, set_opts("open terminal"))
+
+vim.keymap.set('n', '<leader>st', function()
+    vim.cmd.vnew()
+    vim.cmd.term()
+    vim.cmd.wincmd('J')
+    vim.api.nvim_win_set_height(0, 20)
+end)
 
 function tab_line()
     local tabline = ""
