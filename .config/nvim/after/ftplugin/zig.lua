@@ -1,5 +1,5 @@
 vim.keymap.set("n", "<leader>5", function()
-    Build('clear && zig build run')
+    ExecTerm('clear && zig build run')
 end, { desc = "build and run" })
 
 -- local ls = require('luasnip')

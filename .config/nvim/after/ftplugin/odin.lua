@@ -1,9 +1,17 @@
+vim.bo.errorformat = "%f(%l:%c) %m"
+
 vim.keymap.set({"n"}, "<leader>5", function()
-    -- Build('clear && ./build.sh "-debug -sanitize:address -vet -vet-using-param -vet-cast -warnings-as-errors"')
-    local flags = "-debug -vet-unused-imports -vet-shadowing -vet-using-stmt -vet-using-param -vet-cast -warnings-as-errors"
-    Build('clear && ./build.sh "'.. flags ..'"')
+    Build('run')
 end, { desc = "build" })
 
-vim.keymap.set({"n"}, "<leader>6", function()
-    Build('clear && ./build.sh')
-end, { desc = "build" })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = '[^l]*',
+    command = 'cwindow',
+    nested = true,
+})
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = 'l*',
+    command = 'lwindow',
+    nested = true,
+})

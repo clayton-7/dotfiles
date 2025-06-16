@@ -316,7 +316,7 @@ M.nightfox = {
     "EdenEast/nightfox.nvim",
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
-        vim.cmd.colorscheme("nightfox")
+        vim.cmd.colorscheme("nordfox")
     end,
 }
 
@@ -471,8 +471,74 @@ M.fogbell = {
     lazy = false,
     priority = 1000,
     config = function()
+        vim.g.fogbell_transparent = 1
         vim.cmd([[colorscheme fogbell]])
     end
 }
+
+M.mountaineer = {
+    "TheNiteCoder/mountaineer.vim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme mountaineer]])
+    end
+}
+
+M.shadow = {
+    "rjshkhr/shadow.nvim",
+    priority = 1000,
+    config = function()
+        vim.opt.termguicolors = true
+        vim.cmd.colorscheme("shadow")
+        vim.cmd("highlight Visual guibg=#2f383b")
+    end,
+}
+
+M.dogrun = {
+    'wadackel/vim-dogrun',
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme dogrun]])
+    end
+}
+
+M.monochrome = {
+    "kdheepak/monochrome.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme monochrome]])
+    end
+}
+
+M.atlas = {
+    "huyvohcmc/atlas.vim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme atlas]])
+    end
+}
+
+M.candle_grey = {
+    "aditya-azad/candle-grey",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme candle-grey]])
+    end
+}
+
+M.warlock = {
+    "hardselius/warlock",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd([[colorscheme warlock]])
+    end
+}
+
 
 return M
