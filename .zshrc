@@ -9,7 +9,7 @@ export TERM="alacritty"
 export TERMINAL="alacritty"
 
 export MANPAGER="nvim +Man!"
-
+export HSA_OVERRIDE_GFX_VERSION=10.3.0
 set -o ignoreeof
 
 HISTFILE=~/.zsh_history
@@ -57,3 +57,4 @@ source ~/.config/.zsh/zsh-history-substring-search.zsh
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
+alias yayf="yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window=down:75% | xargs -ro yay -S"

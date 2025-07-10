@@ -466,6 +466,34 @@ M.nord = {
     end,
 }
 
+M.nordark = {
+    "jackm-morgan/nordark.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("nordark")
+    end
+}
+
+M.nordify = {
+    "Isrothy/nordify.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("nordify")
+    end
+}
+
+M.deku = {
+    "kaplanz/deku.nvim",
+    lazy = false,
+    priority = 1000,
+    dependencies = { "rktjmp/lush.nvim" },
+    config = function()
+        vim.cmd.colorscheme("deku")
+    end
+}
+
 M.fogbell = {
     "jaredgorski/fogbell.vim",
     lazy = false,
@@ -540,5 +568,82 @@ M.warlock = {
     end
 }
 
+M.minty = {
+    "antonio-hickey/minty-melon",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("minty-melon")
+    end
+}
+
+M.shinjuku = {
+    "samir-roy/shinjuku.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("shinjuku")
+    end
+}
+
+M.cold = {
+    "gmr458/cold.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("cold")
+    end
+}
+
+M.vesper = {
+    "datsfilipe/vesper.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        require('vesper').setup {
+            transparent = true,
+        }
+        vim.cmd.colorscheme("vesper")
+    end
+}
+
+M.black_metal = {
+    "metalelf0/black-metal-theme-neovim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.o.background = "light"
+        require("black-metal").setup{
+            -- Can be one of: bathory | burzum | dark-funeral | darkthrone | emperor | gorgoroth | immortal | impaled-nazarene | khold | marduk | mayhem | nile | taake | thyrfing | venom | windir
+         theme = "emperor",
+         alt_bg = true,
+         variant = "light",
+        }
+        require("black-metal").load()
+    end
+}
+
+M.darkvoid = {
+    "darkvoid-theme/darkvoid.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        require('darkvoid').setup {
+            transparent = true,
+            glow = true,
+        }
+        vim.cmd.colorscheme("darkvoid")
+    end
+}
+
+M.sweetie = {
+    "NTBBloodbath/sweetie.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.o.background = "light"
+        vim.cmd.colorscheme("sweetie")
+    end
+}
 
 return M

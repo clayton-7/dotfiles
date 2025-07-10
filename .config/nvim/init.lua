@@ -37,6 +37,7 @@ vim.filetype.add {
         v = "v",
         pb = 'purebasic',
         pbi = 'purebasic',
+        jule = 'jule',
     }
 }
 
@@ -189,7 +190,7 @@ require("lazy").setup({
             { "<leader>sl", function() Snacks.picker.loclist() end, desc = "Location List" },
             { "<leader>sm", function() Snacks.picker.marks() end, desc = "Marks" },
             { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
-            { "<leader>u", function() Snacks.picker.undo() end, desc = "Undo History" },
+            { "<leader>u" , function() Snacks.picker.undo() end, desc = "Undo History" },
             { "<leader>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
             -- LSP
             { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
@@ -234,9 +235,11 @@ require("lazy").setup({
             require('mini.comment').setup{  mappings = { comment_line = 'gc' } }
             require('mini.icons').setup()
             require('mini.completion').setup{ delay = { completion = 9999999999, info = 0, signature = 0 }}
+            require('mini.pairs').setup()
         end,
     },
     { "sheerun/vim-polyglot" },
+    { "kevinhwang91/nvim-bqf" },
     {
         'tzachar/highlight-undo.nvim',
         opts = {
@@ -281,9 +284,19 @@ require("lazy").setup({
     { "pechorin/any-jump.vim" },
     { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
 
+    {
+        "julelang/jule.nvim",
+        config = function()
+            require('jule').setup {
+                format_on_save = false,
+            }
+        end,
+    },
+
     -- require("themes").nord,
     -- require("themes").nightfox,
-    require("themes").warlock,
+    -- require("themes").warlock,
+    require("themes").darkvoid,
 }, { ui = { border = "rounded" } })
 
 local function set_opts(desc, silent)
@@ -334,7 +347,7 @@ vim.keymap.set("n", "zh", function() vim.cmd("bn") end, set_opts("Next buffer", 
 vim.keymap.set("n", "zl", function() vim.cmd("bp") end, set_opts("Previous buffer", true))
 
 vim.keymap.set("n", "<Leader>sp", ':SessionManager load_session<CR>', set_opts("Open projects", true))
-vim.keymap.set("n", "<CR>", ':w<CR>', set_opts("Save current buffer", false))
+-- vim.keymap.set("n", "<CR>", ':w<CR>', set_opts("Save current buffer", false))
 
 vim.keymap.set({ 'n', 'i', 'v','t' }, '<F1>', "<Esc>", set_opts())
 
