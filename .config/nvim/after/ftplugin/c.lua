@@ -1,25 +1,58 @@
--- local dap = require('dap')
---
--- vim.keymap.set("n", "<leader>5", function()
---     if vim.api.nvim_get_mode().mode == 't' then vim.cmd("ToggleTerm") end
---
---     dap.continue()
---     local started = type(dap.session()) == 'table'
---
---     if not started then print('cannot debug an empty file!') end
--- end, { desc = "run debug" })
+local dap, dapui = require("dap"), require("dapui")
+dapui.setup()
 
-vim.keymap.set("n", "<leader>5", function()
-    ExecTerm('clear && bear -- ninja build && clear && ninja run')
-end, { desc = "build" })
+dap.listeners.before.attach.dapui_config = function() dapui.open() end
+dap.listeners.before.launch.dapui_config = function() dapui.open() end
+dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
 
-vim.keymap.set("n", "<leader>6", function()
-    vim.cmd('TermExec cmd="clear && bear -- ninja build"')
-    vim.cmd("ToggleTerm")
-end, { desc = "build" })
+dap.adapters.codelldb = {
+    type = 'server',
+    port = "${port}",
+    executable = {
+        command = "codelldb",
+        args = { "--port", "${port}" },
+    },
+}
 
+dap.configurations.c = {
+    {
+        name = "Launch file",
+        type = "codelldb",
+        request = "launch",
+        program = function()
+            local cwd = vim.fn.getcwd()
+            local bin = vim.fn.fnamemodify(cwd, ':t')
+            return cwd .. "/" .. bin
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+    },
+}
+dap.configurations.cpp = dap.configurations.c
 
-vim.keymap.set("n", "<leader>7", function()
-    vim.cmd('TermExec cmd="clear && bear -- ninja build"')
-    vim.cmd('TermExec cmd="clear && ninja run"')
-end, { desc = "build and run" })
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = '[^l]*',
+    command = 'cwindow',
+    nested = true,
+})
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    pattern = 'l*',
+    command = 'lwindow',
+    nested = true,
+})
+
+vim.keymap.set({"n"}, "<leader>4", function() ExecTerm('make clean') end, { desc = "make clean" })
+vim.keymap.set({"n"}, "<leader>5", function() Build('run') end, { desc = "build" })
+
+vim.keymap.set("n", "<A-o>", ':LspClangdSwitchSourceHeader<CR>')
+vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = "Debugger toggle breakpoint" })
+vim.keymap.set('n', '<leader>ds', dap.continue, { desc = "Debugger start/continue" })
+vim.keymap.set('n', '<leader>dl', dap.step_into, { desc = "Debugger step into" })
+vim.keymap.set('n', '<leader>dj', dap.step_over, { desc = "Debugger step over" })
+vim.keymap.set('n', '<leader>dh', dap.step_out, { desc = "Debugger step out" })
+vim.keymap.set('n', '<leader>dr', dap.repl.open, { desc = "Debugger open repl" })
+vim.keymap.set('n', '<leader>dq', function() dap.terminate(); dapui.close() end, { desc = "Debugger terminate" })
+vim.keymap.set({'n','v'}, '<leader>de', dapui.eval, { desc = "Debugger evaluate expression" })
+vim.keymap.set('n', '<leader>dt', dapui.toggle, { desc = "Debugger toggle ui" })

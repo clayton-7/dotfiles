@@ -1,8 +1,8 @@
 window-decoration = false
 
-background = 171717
-background-opacity = 0.85
-adjust-cell-height = -2
+background = 181818
+background-opacity = 0.75
 shell-integration-features = no-cursor
 cursor-style = block
 confirm-close-surface = false
+font-size = 11

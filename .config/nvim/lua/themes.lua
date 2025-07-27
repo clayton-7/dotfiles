@@ -646,4 +646,13 @@ M.sweetie = {
     end
 }
 
+M.apprentice = {
+    "romainl/Apprentice",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("apprentice")
+    end
+}
+
 return M

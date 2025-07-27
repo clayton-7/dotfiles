@@ -15,6 +15,8 @@ vim.opt.guicursor = "n-v-c-i:block"
 vim.opt.hlsearch = true
 vim.opt.tabstop = 4
 vim.opt.virtualedit = "all"
+vim.opt.termguicolors = true
+vim.opt.completeopt = "menu,menuone,noselect,noinsert,fuzzy"
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking text",
@@ -46,7 +48,11 @@ vim.api.nvim_create_autocmd("BufRead", {
     group = vim.api.nvim_create_augroup("filetype_by_extension", { clear = true }),
     pattern = "*",
     callback = function()
-        vim.bo.filetype = vim.fn.fnamemodify(vim.fn.expand("%:e"), ":t")
+        local name = vim.fn.fnamemodify(vim.fn.expand("%:e"), ":t")
+        if name == "hpp" then
+            name = "cpp"
+        end
+        vim.bo.filetype = name
     end,
 })
 
@@ -234,8 +240,7 @@ require("lazy").setup({
             require('mini.splitjoin').setup()
             require('mini.comment').setup{  mappings = { comment_line = 'gc' } }
             require('mini.icons').setup()
-            require('mini.completion').setup{ delay = { completion = 9999999999, info = 0, signature = 0 }}
-            require('mini.pairs').setup()
+            require('mini.completion').setup{ delay = { completion = 9999999999, info = 0, signature = 0 } }
         end,
     },
     { "sheerun/vim-polyglot" },
@@ -425,13 +430,24 @@ function Build(params, build_script_filepath, error_log_filepath)
     if not error_log_filepath then error_log_filepath = "error.log" end
     if not params then params = "" end
 
-    vim.fn.system('./' .. build_script_filepath)
+    local output = vim.fn.system('./' .. build_script_filepath)
+    output = output:gsub("%z", "")
     vim.fn.setqflist{}
 
     if vim.v.shell_error == 0 then
         vim.cmd('cclose')
         ExecTerm('clear && ./' .. build_script_filepath .. ' ' .. params)
     else
+        local err_file = io.open(error_log_filepath, "rw")
+        local err_data = err_file:read("l") or ""
+        err_file:close()
+
+        if #err_data <= 0 then
+            err_file = io.open(error_log_filepath, "w")
+            err_file:write(output)
+            err_file:close()
+        end
+
         vim.cmd('cfile ' .. error_log_filepath)
         vim.cmd('copen 15')
         vim.cmd.wincmd('J')
