@@ -468,6 +468,7 @@ local function hide_bar()
         vim.cmd("set noshowcmd")
     else
         vim.cmd("set laststatus=2")
+        vim.cmd("set cmdheight=1")
         vim.cmd("set showmode")
         vim.cmd("set ruler")
         vim.cmd("set showcmd")

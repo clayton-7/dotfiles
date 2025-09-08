@@ -12,6 +12,8 @@ export MANPAGER="nvim +Man!"
 export HSA_OVERRIDE_GFX_VERSION=10.3.0
 set -o ignoreeof
 
+alias ssh='TERM=xterm-256color ssh'
+
 HISTFILE=~/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000

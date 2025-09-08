@@ -1,0 +1,36 @@
+// For information on binding keys, see the Zed documentation: https://zed.dev/docs/key-bindings
+// To see the default key bindings run `zed: open default keymap` from the command palette.
+[
+  {
+    "bindings": {
+      "ctrl-q": null
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      ";": ["workspace::SendKeystrokes", "_"],
+      "enter": "workspace::Save",
+      "space k": "editor::MoveLineUp",
+      "space j": "editor::MoveLineDown",
+      "space space": "file_finder::Toggle",
+      "space s f": "file_finder::Toggle",
+      "space t": "workspace::NewTerminal"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-n": "vim::SelectNext",
+      "ctrl-shift-n": ["editor::SelectNext", { "replace_newest": true }]
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "ctrl-n": "editor::ContextMenuNext",
+      "ctrl-p": "editor::ContextMenuPrevious",
+      "ctrl-y": "editor::ConfirmCompletion"
+    }
+  }
+]

@@ -2,7 +2,8 @@
     // General Settings
     "margin-bottom": 0,
     "margin-top": 10,
-    "layer": "top",
+    // "layer": "top",
+    "layer": "bottom",
     "margin-left": 10,
     "margin-right": 10,
     "spacing": 0,
