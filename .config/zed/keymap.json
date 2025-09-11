@@ -15,7 +15,16 @@
       "space j": "editor::MoveLineDown",
       "space space": "file_finder::Toggle",
       "space s f": "file_finder::Toggle",
-      "space t": "workspace::NewTerminal"
+      "space t": "workspace::NewTerminal",
+      "space g": "editor::ToggleGitBlameInline",
+      "ctrl-c": "editor::Copy"
+    }
+  },
+
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "alt-p": "vim::Paste"
     }
   },
   {
