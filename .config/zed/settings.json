@@ -1,6 +1,13 @@
 {
   "show_edit_predictions": false,
   "agent": {
+    "play_sound_when_agent_done": true,
+    "default_profile": "write",
+    "default_model": {
+      "provider": "google",
+      "model": "gemini-2.5-flash-lite-preview"
+    },
+    "always_allow_tool_actions": false,
     "inline_assistant_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"

@@ -1,0 +1,150 @@
+spawn-at-startup "dunst"
+spawn-at-startup "ibus-daemon -rxR"
+spawn-at-startup "fcitx5"
+spawn-at-startup "xwayland-satellite"
+spawn-at-startup "flatpak" "run" "com.github.wwmm.easyeffects" "--gapplication-service"
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+
+spawn-sh-at-startup "waybar -c ~/.config/waybar/config_niri"
+spawn-sh-at-startup "swaybg -o DP-1 -i ~/.config/wallpapers/4.png --mode fill"
+spawn-sh-at-startup "swaybg -o DP-2 -i ~/.config/wallpapers/2.jpg --mode fill"
+
+prefer-no-csd
+screenshot-path "~/%Y-%m-%d_%H-%M-%S.png"
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    GDK_SCALE "0.5"
+    DISPLAY ":0"
+    XCURSOR_SIZE "24"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+    GTK_THEME "Adwaita:dark"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+
+output "DP-1" {
+    mode "2560x1440@359.999"
+    scale 1.25
+    transform "normal"  // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
+    position x=2048 y=0 // 2560 / 1.25 == 2048
+    variable-refresh-rate
+    background-color "#000000"
+}
+
+output "DP-2" {
+    mode "3840x2160@60.000"
+    scale 1.666667
+    transform "normal"
+    background-color "#000000"
+}
+
+input {
+    keyboard {
+        xkb { layout "us,br"; }
+        repeat-rate  90
+        repeat-delay 220
+    }
+
+    warp-mouse-to-focus
+    focus-follows-mouse max-scroll-amount="1%"
+}
+
+layout {
+    gaps 11
+    focus-ring {
+        width 1
+        inactive-color "#00000000"
+        urgent-color "#9b0000"
+        active-gradient from="#33ccffee" to="#00ff99ee" angle=45
+    }
+    default-column-width { proportion 0.5; }
+    preset-column-widths { proportion 0.5; proportion 1.0; }
+}
+
+animations { slowdown 0.75; }
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+    draw-border-with-background false
+}
+
+window-rule {
+    match app-id=r#"Force$"#
+    open-floating true
+}
+
+cursor {
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}
+
+xwayland-satellite { path "xwayland-satellite"; }
+overview           { zoom 0.25; }
+gestures           { hot-corners { off; }; }
+hotkey-overlay     { skip-at-startup; }
+
+binds {
+    Mod+T            { spawn "ghostty"; }
+    Mod+F            { spawn "fuzzel"; }
+    Mod+E            { spawn "thunar"; }
+    Mod+Alt+L        { spawn "swaylock"; }
+    Mod+B            { spawn-sh "~/.config/waybar/toggle_bar.sh"; }
+
+    Mod+C            { close-window; }
+    Mod+V            { toggle-window-floating; }
+    Mod+Space        { switch-layout "next"; }
+    Mod+Shift+Space  { switch-layout "prev"; }
+    Mod+Shift+Slash  { show-hotkey-overlay; }
+    Mod+Q            { quit; }
+    Mod+Shift+P      { power-off-monitors; }
+    Print            { screenshot; }
+    Ctrl+Print       { screenshot-screen; }
+    Alt+Print        { screenshot-window; }
+    Mod+H            { focus-column-left; }
+    Mod+L            { focus-column-right; }
+    Mod+Ctrl+H       { move-column-left; }
+    Mod+Ctrl+J       { move-window-down; }
+    Mod+Ctrl+K       { move-window-up; }
+    Mod+Ctrl+L       { move-column-right; }
+    Mod+Shift+H      { focus-monitor-left; }
+    Mod+Shift+J      { focus-monitor-down; }
+    Mod+Shift+K      { focus-monitor-up; }
+    Mod+Shift+L      { focus-monitor-right; }
+    Mod+Comma        { consume-or-expel-window-left; }
+    Mod+Period       { consume-or-expel-window-right; }
+
+    Mod+R            { switch-preset-column-width; }
+    Mod+M            { maximize-column; }
+    Mod+Shift+M      { fullscreen-window; }
+    Mod+P            { toggle-overview; }
+    Mod+I            { move-window-to-monitor-left; }
+    Mod+O            { move-window-to-monitor-right; }
+
+    Mod+1       { focus-workspace 1; }
+    Mod+2       { focus-workspace 2; }
+    Mod+3       { focus-workspace 3; }
+    Mod+4       { focus-workspace 4; }
+    Mod+5       { focus-workspace 5; }
+    Mod+6       { focus-workspace 6; }
+    Mod+7       { focus-workspace 7; }
+    Mod+8       { focus-workspace 8; }
+    Mod+9       { focus-workspace 9; }
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioPlay                               { spawn "playerctl" "play-pause"; }
+    XF86AudioPrev                               { spawn "playerctl" "previous"; }
+    XF86AudioNext                               { spawn "playerctl" "next"; }
+}

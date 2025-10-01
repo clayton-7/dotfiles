@@ -3,7 +3,8 @@
 [
   {
     "bindings": {
-      "ctrl-q": null
+      "ctrl-q": null,
+      "shift-escape": null
     }
   },
   {
@@ -17,10 +18,10 @@
       "space s f": "file_finder::Toggle",
       "space t": "workspace::NewTerminal",
       "space g": "editor::ToggleGitBlameInline",
-      "ctrl-c": "editor::Copy"
+      "ctrl-c": "editor::Copy",
+      "Y": ["workspace::SendKeystrokes", "y $"]
     }
   },
-
   {
     "context": "Editor && vim_mode == insert",
     "bindings": {

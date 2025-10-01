@@ -1,40 +1,19 @@
-{
-    // Workspaces
-    "hyprland/workspaces" : {
-        "on-click": "activate",
-        "active-only": false,
-        "all-outputs": false,
-        "format": "{}",
-        "format-icons": {
-            "urgent": "",
-            "active": "",
-            "default": ""
-        },
-    },
-
-    // Hyprland Window
-    "hyprland/window": {
-        "separate-outputs": true
-    },
-
-    // Hyprland Window
+ {
     "niri/window": {
         "separate-outputs": true
     },
 
-    // Empty
-    "custom/empty": {
-        "format": ""
+    "niri/workspaces": {
+        "expand": true,
+        "show_empty": false
     },
 
-    // Power Menu
     "custom/exit": {
         "format": "",
         "on-click": "wlogout",
         "tooltip-format": "Power Menu"
     },
 
-    // Keyboard State
     "keyboard-state": {
         "numlock": true,
         "capslock": true,
@@ -45,29 +24,26 @@
         }
     },
 
-    // System tray
     "tray": {
         "icon-size": 21,
         "spacing": 10
     },
 
-    // Clock
     "clock": {
         "format": "{:%D - %H:%M:%S}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "on-click": "gnome-calendar",
-        "interval": 1,
+        "interval": 1
     },
 
-    "hyprland/language": {
-        "format": "/ K {short}"
+    "niri/language": {
+        "format": "{short}"
     },
 
-    // Pulseaudio
     "pulseaudio": {
         "format": "{icon}{volume}%",
-        "format-muted": " {format_source}",
-        "format-source": "{volume}% ",
+        "format-muted": "🔇 mute",
+        // "format-source": "{volume}% ",
         "format-source-muted": "",
         "format-icons": {
             "default": [" ", " ", " "]
@@ -76,10 +52,9 @@
         "on-click": "pavucontrol"
     },
 
-    // Other
     "user": {
         "format": "{user}",
         "interval": 60,
-        "icon": false,
+        "icon": false
     }
 }

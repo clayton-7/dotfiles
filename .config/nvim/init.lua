@@ -10,7 +10,7 @@ vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.guicursor = "n-v-c-i:block"
--- vim.opt.scrolloff = 999
+vim.opt.scrolloff = 999
 -- vim.opt.cursorline = true
 vim.opt.hlsearch = true
 vim.opt.tabstop = 4

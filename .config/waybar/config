@@ -26,8 +26,7 @@
     "modules-right": [
         "tray",
         "pulseaudio",
-        "group/hardware",
         "clock",
-        "custom/exit",
+        "custom/exit"
     ]
 }
