@@ -206,15 +206,16 @@ M.everforest = {
     "sainnhe/everforest",
     priority = 1000,
     config = function()
-        vim.g.everforest_background = "hard"
+        -- vim.g.everforest_background = "hard"
+        vim.g.everforest_background = "soft"
         vim.g.everforest_better_performance = 1
-        vim.g.everforest_dim_inactive_windows = 1
-        vim.g.everforest_ui_contrast = "high"
+        vim.g.everforest_ui_contrast = "low"
         vim.g.everforest_diagnostic_virtual_text = "colored"
+        vim.g.everforest_cursor = "auto"
         -- vim.g.everforest_transparent_background = 1
 
         vim.cmd("colorscheme everforest")
-        -- vim.cmd("highlight Normal guibg=#11130d")
+        vim.api.nvim_set_hl(0, 'Visual', { link = 'Search' })
     end,
 }
 
@@ -410,16 +411,16 @@ M.darcula_solid1 = {
 
 M.zenburn = {
     "phha/zenburn.nvim",
-    config = function ()
+    config = function()
         vim.cmd([[colorscheme zenburn]])
+        vim.cmd("highlight Comment guifg=#707070")
     end
 }
 
-M.monotone = {
-    "davidosomething/vim-colors-meh", --
-
-    config = function ()
-        vim.cmd([[colorscheme meh]]) --
+M.meh = {
+    "davidosomething/vim-colors-meh",
+    config = function()
+        vim.cmd([[colorscheme meh]])
     end
 }
 
@@ -612,12 +613,12 @@ M.black_metal = {
     lazy = false,
     priority = 1000,
     config = function()
-        vim.o.background = "light"
+        vim.o.background = "dark"
         require("black-metal").setup{
             -- Can be one of: bathory | burzum | dark-funeral | darkthrone | emperor | gorgoroth | immortal | impaled-nazarene | khold | marduk | mayhem | nile | taake | thyrfing | venom | windir
-         theme = "emperor",
-         alt_bg = true,
-         variant = "light",
+         theme = "venom",
+         alt_bg = false,
+         variant = "dark",
         }
         require("black-metal").load()
     end
@@ -630,7 +631,7 @@ M.darkvoid = {
     config = function()
         require('darkvoid').setup {
             transparent = true,
-            glow = true,
+            glow = false,
         }
         vim.cmd.colorscheme("darkvoid")
     end
@@ -641,7 +642,7 @@ M.sweetie = {
     lazy = false,
     priority = 1000,
     config = function()
-        vim.o.background = "light"
+        vim.o.background = "dark"
         vim.cmd.colorscheme("sweetie")
     end
 }
