@@ -1,7 +1,11 @@
+vim.keymap.set("n", "<leader>4", function()
+    ExecTerm('clear && ./build.sh clean')
+end, { desc = "clean" })
+
 vim.keymap.set("n", "<leader>5", function()
-    Build('clear && nim --verbosity:0 r src/main.nim')
+    ExecTerm('clear && ./build.sh run')
 end, { desc = "build and run" })
 
 vim.keymap.set("n", "<leader>6", function()
-    Build('clear && nimble --mm:none -d:noCycleGC -d:release --opt:speed run')
-end, { desc = "build for speed without cg" })
+    ExecTerm('clear && ./build.sh build_c')
+end, { desc = "build c files" })

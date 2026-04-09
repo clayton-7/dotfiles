@@ -1,5 +1,6 @@
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=$HOME/.nimble/bin:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
 
 export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
@@ -13,6 +14,9 @@ export HSA_OVERRIDE_GFX_VERSION=10.3.0
 set -o ignoreeof
 
 alias ssh='TERM=xterm-256color ssh'
+export PATH="$HOME/.nimble/bin:$PATH"
+
+export OLLAMA_FLASH_ATTENTION=0
 
 HISTFILE=~/.zsh_history
 HISTSIZE=1000000

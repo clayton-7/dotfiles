@@ -2,28 +2,16 @@
     // General Settings
     "margin-bottom": 0,
     "margin-top": 10,
-    // "layer": "top",
     "layer": "bottom",
     "margin-left": 10,
     "margin-right": 10,
     "spacing": 0,
 
-    // Load Modules
-    "include": ["~/.config/waybar/modules.json"],
+    "include": ["~/.config/waybar/niri_modules.jsonc"],
 
-    // Modules Left
-    "modules-left": [
-        "hyprland/workspaces",
-    ],
-
-    // Modules Center
-    "modules-center": [
-        "hyprland/window",
-        "custom/empty"
-    ],
-
-    // Modules Right
-    "modules-right": [
+    "modules-left":   [ "niri/workspaces" ],
+    "modules-center": [ "niri/window" ],
+    "modules-right":  [
         "tray",
         "pulseaudio",
         "clock",

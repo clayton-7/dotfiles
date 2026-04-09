@@ -12,6 +12,7 @@ vim.opt.inccommand = "split"
 vim.opt.guicursor = "n-v-c-i:block"
 vim.opt.scrolloff = 999
 vim.opt.hlsearch = true
+vim.opt.incsearch = true
 vim.opt.tabstop = 4
 vim.opt.virtualedit = "all"
 vim.opt.termguicolors = true
@@ -19,6 +20,7 @@ vim.opt.completeopt = "menu,menuone,noselect,noinsert,fuzzy"
 vim.opt.confirm = true
 vim.o.commentstring = "// %s"
 vim.opt.shiftwidth = 4
+vim.cmd("set path+=./**,/usr/local/include,/usr/include")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
@@ -61,6 +63,13 @@ vim.api.nvim_create_autocmd("BufRead", {
 
         if name == "hpp" then
             name = "cpp"
+            vim.bo.filetype = name
+
+        elseif name == "zc" then
+            vim.bo.filetype = name
+        elseif name == "gd" then
+            vim.bo.filetype = name
+        elseif name == "wgsl" then
             vim.bo.filetype = name
         end
     end,
@@ -167,6 +176,7 @@ require("lazy").setup({
             require('session_manager').setup {
                 sessions_dir = require('plenary.path'):new(vim.fn.stdpath('data'), 'sessions'),
                 autoload_mode = require('session_manager.config').AutoloadMode.Disabled,
+                autosave_ignore_dirs = { "~", "~/Downloads" },
             }
         end,
     },
@@ -472,6 +482,8 @@ function Build(params, build_script_filepath, error_log_filepath)
         ExecTerm('./' .. build_script_filepath .. ' ' .. params)
     else
         local err_file = io.open(error_log_filepath, "rw")
+        if not err_file then print("no error file"); return end
+
         local err_data = err_file:read("l") or ""
         err_file:close()
 

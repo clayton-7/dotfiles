@@ -2,12 +2,13 @@ vim.keymap.set("n", "<leader>5", function()
     ExecTerm('clear && zig build run')
 end, { desc = "build and run" })
 
+vim.g.zig_fmt_autosave = 0
+
 -- local ls = require('luasnip')
 -- local s = ls.snippet
 -- local t = ls.text_node
 -- local i = ls.insert_node
 
-vim.g.zig_fmt_autosave = 0 -- disable autoformat zig
 
 -- ls.add_snippets("zig", {
 --     s("trace", {

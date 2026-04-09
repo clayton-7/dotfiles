@@ -8,7 +8,7 @@ vim.o.tabstop = 8
 vim.o.shiftwidth = 8
 
 vim.loop.new_timer():start(100, 0, vim.schedule_wrap(function()
-    vim.o.filetype = "gdscript"
+    vim.bo.filetype = "gdscript"
     vim.o.tabstop = 8
     vim.o.shiftwidth = 8
 end))

@@ -2,11 +2,15 @@ spawn-at-startup "dunst"
 spawn-at-startup "ibus-daemon -rxR"
 spawn-at-startup "fcitx5"
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "flatpak" "run" "com.github.wwmm.easyeffects" "--gapplication-service"
+// spawn-at-startup "flatpak" "run" "com.github.wwmm.easyeffects" "--gapplication-service"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 
-spawn-sh-at-startup "waybar -c ~/.config/waybar/config_niri"
-spawn-sh-at-startup "swaybg -o DP-1 -i ~/.config/wallpapers/4.png --mode fill"
+// spawn-sh-at-startup "~/dev/rust/niri_resize/target/release/niri_resize"
+
+// spawn-sh-at-startup "waybar -c ~/.config/waybar/config_niri"
+spawn-sh-at-startup "waybar"
+spawn-sh-at-startup "~/.config/waybar/toggle_bar.sh"
+spawn-sh-at-startup "swaybg -o DP-1 -i ~/.config/wallpapers/2.jpg --mode fill"
 spawn-sh-at-startup "swaybg -o DP-2 -i ~/.config/wallpapers/2.jpg --mode fill"
 
 prefer-no-csd
@@ -46,34 +50,41 @@ input {
     }
 
     warp-mouse-to-focus
-    focus-follows-mouse max-scroll-amount="1%"
+    focus-follows-mouse max-scroll-amount="90%"
 }
 
 layout {
-    gaps 11
+    // gaps 11
+    gaps 0
     focus-ring {
         width 1
         inactive-color "#00000000"
         urgent-color "#9b0000"
         active-gradient from="#33ccffee" to="#00ff99ee" angle=45
     }
-    default-column-width { proportion 0.5; }
-    preset-column-widths { proportion 0.5; proportion 1.0; }
+
+    // default-column-width { proportion 1.0; }
+    // preset-column-widths { proportion 0.5; proportion 1.0; }
+    // preset-window-heights { proportion 0.5; proportion 1.0; }
 }
 
 animations { slowdown 0.75; }
 
 window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
+    // geometry-corner-radius 12
+    geometry-corner-radius 0
+    // clip-to-geometry true
     draw-border-with-background false
+    open-maximized true
 }
 
 window-rule {
     match app-id=r#"Force$"#
+    // open-fullscreen true
+    open-focused true
     open-floating true
+    // open-on-output "DP-2"
 }
-
 cursor {
     hide-when-typing
     hide-after-inactive-ms 1000
@@ -103,6 +114,8 @@ binds {
     Alt+Print        { screenshot-window; }
     Mod+H            { focus-column-left; }
     Mod+L            { focus-column-right; }
+    Mod+K            { focus-window-up; }
+    Mod+J            { focus-window-down; }
     Mod+Ctrl+H       { move-column-left; }
     Mod+Ctrl+J       { move-window-down; }
     Mod+Ctrl+K       { move-window-up; }
@@ -120,6 +133,8 @@ binds {
     Mod+P            { toggle-overview; }
     Mod+I            { move-window-to-monitor-left; }
     Mod+O            { move-window-to-monitor-right; }
+
+    Mod+Y            { spawn-sh "~/.config/niri/master_layout.sh"; }
 
     Mod+1       { focus-workspace 1; }
     Mod+2       { focus-workspace 2; }
