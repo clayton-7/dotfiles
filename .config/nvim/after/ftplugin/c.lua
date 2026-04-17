@@ -45,8 +45,16 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
 
 -- vim.keymap.set({"n"}, "<leader>4", ":make -C .. clean<CR>", { desc = "make clean" })
 -- vim.keymap.set({"n"}, "<leader>5", function() Build("run", "../build.sh", "../error.log") end, { desc = "build" })
-vim.keymap.set({"n"}, "<leader>4", ":make clean<CR>", { desc = "make clean" })
-vim.keymap.set({"n"}, "<leader>5", function() Build("run") end, { desc = "build" })
+-- vim.keymap.set({"n"}, "<leader>4", ":make clean<CR>", { desc = "make clean" })
+-- vim.keymap.set({"n"}, "<leader>5", function() Build("run") end, { desc = "build" })
+-- vim.keymap.set({"n"}, "<leader>4", ":make clean<CR>", { desc = "make clean" })
+vim.keymap.set({"n"}, "<leader>4", function()
+    ExecTerm("cd build && rm CMakeCache.txt && cmake ..")
+end, { desc = "make clean" })
+
+vim.keymap.set({"n"}, "<leader>5", function()
+    ExecTerm("cd build && cmake --build . --target run")
+end, { desc = "build and run" })
 
 vim.keymap.set("n", "<A-o>", ":LspClangdSwitchSourceHeader<CR>")
 vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debugger toggle breakpoint" })
