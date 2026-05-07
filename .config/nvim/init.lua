@@ -67,6 +67,8 @@ vim.api.nvim_create_autocmd("BufRead", {
             vim.bo.filetype = name
         elseif name == "wgsl" then
             vim.bo.filetype = name
+        elseif name == "luau" then
+            vim.bo.filetype = name
         end
     end,
 })
@@ -100,7 +102,7 @@ require("lazy").setup({
         },
     },
     { -- Collection of various small independent plugins/modules
-        "echasnovski/mini.nvim",
+        "nvim-mini/mini.nvim",
         version = false,
         event = "InsertEnter",
         config = function()
@@ -180,7 +182,6 @@ require("lazy").setup({
         opts = {}
     },
     { "sheerun/vim-polyglot" },  -- code highlight
-    { "kevinhwang91/nvim-bqf" }, -- better quickfix window
     { "nvim-tree/nvim-web-devicons" },
     { -- session manager
         "Shatur/neovim-session-manager",
@@ -215,7 +216,6 @@ require("lazy").setup({
                     ["ui-select"] = { require("telescope.themes").get_dropdown() },
                     ["undo"] = {
                         side_by_side = true,
-                        saved_only = true,
                         entry_format = "$TIME",
                         layout_strategy = "horizontal",
                         vim_diff_opts = {
@@ -254,10 +254,14 @@ require("lazy").setup({
                     preview = {
                         treesitter = false,
                     },
+
+                    file_ignore_patterns = {
+                        "%.gd.uid", -- ignore godots uid files
+                    },
                 },
             }
 
-            -- its required to install fd and ripgrep to make this works
+            -- its required to install fzf, fd and ripgrep
             pcall(require("telescope").load_extension, "fzf")
             pcall(require("telescope").load_extension, "ui-select")
 
@@ -287,22 +291,6 @@ require("lazy").setup({
                 }
             end, { desc = "[S]earch [/] in Open Files" })
         end,
-    },
-    {
-        "folke/which-key.nvim",
-        event = "InsertEnter",
-        opts = {
-            delay = 200,
-            win = { border = "rounded" },
-            icons = {
-                mappings = true,
-                keys = {},
-            },
-            spec = {
-                { "<leader>s", group = "[S]earch" },
-                { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
-            },
-        },
     },
     {
         "neovim/nvim-lspconfig",
@@ -336,7 +324,7 @@ require("lazy").setup({
                     --  To jump back, press <C-t>.
                     map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 
-                    -- WARN: This is not Goto Definition, this is Goto Declaration.
+                    -- NOTE: This is not Goto Definition, this is Goto Declaration.
                     --  For example, in C this would take you to the header.
                     map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
@@ -403,6 +391,9 @@ require("lazy").setup({
             require("mason-lspconfig").setup {
                 ensure_installed = {},
                 automatic_installation = false,
+                automatic_enable = {
+                    exclude = { "luau_lsp" },
+                },
                 handlers = {
                     function(server_name)
                         local server = servers[server_name] or {}
@@ -414,6 +405,15 @@ require("lazy").setup({
         end,
     },
     { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },
+        opts = {},
+    },
+    {
+        "lopi-py/luau-lsp.nvim",
+        opts = {},
+    },
 
     -- require("themes").nord,
     -- require("themes").nightfox,
@@ -442,23 +442,17 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", set_opts("Exit terminal mode"))
 -- yank to OS clipboard
 vim.keymap.set("n", "<C-c>", '"+yy')
 vim.keymap.set("v", "<C-c>", '"+y')
-vim.keymap.set("n", "<C-S-c>", '"+yy')
-vim.keymap.set("v", "<C-S-c>", '"+y')
 vim.keymap.set("v", "p", '"_dP', { silent = true })
 
 vim.keymap.set("v", "y", "ygv", { silent = true })
 
 vim.keymap.set({ "n", "v" }, "<C-z>", "") -- disable ctrl z
-vim.keymap.set("n", ";", "^", set_opts("Go to the first word on current line"))
 
 vim.keymap.set("v", "<", "<gv", { silent = true })
 vim.keymap.set("v", ">", ">gv", { silent = true })
 
 vim.keymap.set("n", "<C-q>", ":bd!<CR>", set_opts("Close current buffer"))
 vim.keymap.set("t", "<C-q>", "exit<CR><CR>", set_opts("Close current terminal buffer"))
-
-vim.keymap.set("n", "zh", function() vim.cmd("bn") end, set_opts("Next buffer", true))
-vim.keymap.set("n", "zl", function() vim.cmd("bp") end, set_opts("Previous buffer", true))
 
 vim.keymap.set("n", "<leader>sp", ":SessionManager load_session<CR>", set_opts("Open projects", true))
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, set_opts("Code action", true))
@@ -545,7 +539,6 @@ function Build(params, build_script_filepath, error_log_filepath)
 
     if vim.v.shell_error == 0 then
         vim.cmd("cclose")
-        -- ExecTerm("clear && ./" .. build_script_filepath .. " " .. params)
         ExecTerm("./" .. build_script_filepath .. " " .. params)
     else
         local err_file = io.open(error_log_filepath, "rw")
@@ -597,7 +590,6 @@ end
 vim.keymap.set("n", "<leader>nn", toggle_line_number, set_opts("Toggle line numbers", true))
 vim.keymap.set("n", "<leader>bb", hide_bar, set_opts("Toggle bottom bars"))
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic Error messages" })
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic Quickfix list" })
 
 local config_group = vim.api.nvim_create_augroup("on_load_session", {})
 vim.api.nvim_create_autocmd({ "User" }, {
