@@ -1,1 +1,18 @@
-theme = "rasmus"
+theme = "darkvoid"
+
+[editor]
+scrolloff = 999
+trim-trailing-whitespace = true
+popup-border = "all"
+gutters = ["diff", "diagnostics"]
+
+[editor.soft-wrap]
+enable = true
+
+[keys.normal.space]
+5 = ":! $TERM -e sh -c 'cd build && cmake --build . --target run; exec $SHELL' &" # open default terminal and execute cmake with run target
+t = ":! $TERM" # open default terminal
+
+[editor.statusline]
+left = ["file-absolute-path", "file-modification-indicator", "read-only-indicator", "file-encoding"]
+right = ["register", "version-control", "spacer", "spacer", "diagnostics", "spacer", "position"]
