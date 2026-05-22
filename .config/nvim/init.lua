@@ -24,14 +24,14 @@ vim.pack.add{
     "https://github.com/lewis6991/gitsigns.nvim",
     "https://github.com/cappyzawa/trim.nvim",
     "https://github.com/NMAC427/guess-indent.nvim",
-    "https://github.com/nvim-lua/plenary.nvim",
-    "https://github.com/Shatur/neovim-session-manager",
     "https://github.com/EdenEast/nightfox.nvim",
+    "https://github.com/lopi-py/luau-lsp.nvim",
 }
 
 vim.cmd.packadd("nvim.undotree")
+vim.cmd.packadd("cfilter")
 
-require('nightfox').setup { palettes = { nordfox = { bg1 = "#343a46" } } }
+require('nightfox').setup{ palettes = { nordfox = { bg1 = "#343a46" } } }
 vim.cmd("colorscheme nordfox")
 
 require("guess-indent").setup{}
@@ -40,24 +40,15 @@ require("todo-comments").setup{ signs = false }
 require("mini.cursorword").setup{ delay = 50 }
 require("mini.splitjoin").setup()
 require('mini.cmdline').setup()
-
-require("session_manager").setup{
-    sessions_dir = require("plenary.path"):new(vim.fn.stdpath("data"), "sessions"),
-    autoload_mode = require("session_manager.config").AutoloadMode.Disabled,
-    autosave_ignore_dirs = { "~", "~/Downloads" },
-}
-
-require("gitsigns").setup{
-    signs = {
-        add = { text = "▏" },
-        change = { text = "▏" },
-        delete = { text = "_" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-    },
-}
+require('mini.sessions').setup()
+require('mini.statusline').setup()
+require("gitsigns").setup()
 
 vim.keymap.set("n", "<leader>u", "<cmd>Undotree<cr>", { noremap = true })
+vim.keymap.set("n", "<leader>sp", "<cmd>lua MiniSessions.select()<CR>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { silent = true, noremap = true })
+vim.keymap.set('n', '<leader>q', function() vim.diagnostic.setqflist{ severity = nil } end, { noremap = true, silent = true })
+
 vim.keymap.set("v", "<", "<gv", { silent = true, noremap = true })
 vim.keymap.set("v", ">", ">gv", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-c>", '"+yy', { noremap = true })
@@ -67,12 +58,19 @@ vim.keymap.set("v", "y", "ygv", { silent = true })
 vim.keymap.set({ "n", "v" }, "<C-z>", "", { noremap = true }) -- disable ctrl z
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { noremap = true })
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { noremap = true })
-vim.keymap.set("n", "<leader>sp", ":SessionManager load_session<CR>", { silent = true, noremap = true })
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { silent = true, noremap = true })
 
 vim.cmd("set path+=./**,/usr/local/include,/usr/include")
 
 vim.api.nvim_create_autocmd("VimResized", { command = "wincmd =" })
+
+vim.api.nvim_create_user_command("SaveProject", function(opts)
+    if #opts.args <= 0 then
+        print("Missing project name.")
+        return
+    end
+
+    MiniSessions.write(opts.args)
+end, { nargs = 1 })
 
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("no_auto_comment", { clear = true }),
@@ -109,6 +107,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.lsp.enable{ "lua_ls", "clangd", "rust_analyzer" }
+require("luau-lsp").setup{}
 
 -- vim.diagnostic.config{
 --     virtual_text = false,
